@@ -6,6 +6,7 @@
 package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,10 @@ public class ItemController {
     // TODO only admins are allowed on this route.
     @GetMapping("/create")
     public ModelAndView create() {
-        return new ModelAndView("add", "itemForm", new FoodForm());
+        return new ModelAndView("addItem", "itemForm", new FoodForm());
     }
 
-    public static class FoodForm {
+    public static class FoodForm implements Serializable{
 
         private String name;
         private int price;
@@ -75,7 +76,7 @@ public class ItemController {
     public View create(FoodForm form) throws IOException {
         FoodItem item = new FoodItem();
         item.setId(this.getNextItemId());
-        item.setName(form.getName());
+        item.setFoodName(form.getName());
         item.setPrice(form.getPrice());
 
         for (MultipartFile filePart : form.getAttachments()) {

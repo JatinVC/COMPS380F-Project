@@ -14,8 +14,8 @@
     <body>
         <h2>Add a new Item</h2>
         <form:form method="POST" enctype="multipart/form-data" modelAttribute="itemForm">
-            <form:label path="foodName">Food Name</form:label><br />
-            <form:input type="text" path="foodName" /><br />
+            <form:label path="name">Food Name</form:label><br />
+            <form:input type="text" path="name" /><br />
             <form:label path="price">Price</form:label><br />
             <form:input type="text" path="price" /><br />
             <input type="file" name="attachments" multiple="multiple" /><br /><br />

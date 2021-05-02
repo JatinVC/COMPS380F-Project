@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class FoodItem implements Serializable{
     private long id;
-    private String name;
+    private String foodName;
     private int price;
     private Map<String, Attachment> attachments = new Hashtable<>();
 
@@ -28,12 +28,12 @@ public class FoodItem implements Serializable{
         this.id = id;
     }
 
-    public String getName(){
-        return this.name;
+    public String getFoodName(){
+        return this.foodName;
     }
 
-    public void setName(String name){
-        this.name = name;
+    public void setFoodName(String name){
+        this.foodName = name;
     }
 
     public int getPrice(){
