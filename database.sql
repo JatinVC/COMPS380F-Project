@@ -34,7 +34,7 @@ CREATE TABLE items (
 	item_name VARCHAR(50) NOT NULL,
 	item_price INTEGER NOT NULL,
 	item_description VARCHAR(250) NOT NULL,
-	item_availability VARCHAR(50) NOT NULL DEFAULT 'YES',
+	item_availability INTEGER NOT NULL DEFAULT 100,
 	PRIMARY KEY(item_id)
 );
 
@@ -45,9 +45,11 @@ CREATE TABLE items (
 CREATE TABLE item_comments(
 	comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	user_id INTEGER NOT NULL,
+	item_id INTEGER NOT NULL,
 	comment_content VARCHAR(250) NOT NULL,
 	comment_date DATE,
 	FOREIGN KEY (user_id) REFERENCES users(user_id),
+	FOREIGN KEY (item_id) REFERENCES items(item_id),
 	PRIMARY KEY (comment_id)
 );
 
@@ -59,6 +61,7 @@ CREATE TABLE item_comments(
 CREATE TABLE item_picture(
 	picture_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	item_id INTEGER NOT NULL,
+	picture_name VARCHAR(50) NOT NULL,
 	picture_mimetype VARCHAR(50) NOT NULL,
 	picture_data VARCHAR(250) NOT NULL,
 	FOREIGN KEY (item_id) REFERENCES items(item_id),

@@ -8,8 +8,6 @@ package ouhk.comps380f.fproject.model;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
 /**
  *
  * @author Jatin
@@ -21,6 +19,7 @@ public class FoodItem implements Serializable{
     private String description;
     private int quantity;
     private List<Attachment> attachments;
+    private List<Comments> comments;
 
 
     public FoodItem(){
@@ -79,7 +78,7 @@ public class FoodItem implements Serializable{
         return this.attachments.get(index);
     }
 
-    public Collection<Attachment> getAttachments(){
+    public List<Attachment> getAttachments(){
         return this.attachments;
     }
 
@@ -89,5 +88,21 @@ public class FoodItem implements Serializable{
 
     public int getNumberOfAttachments(){
         return this.attachments.size();
-    }   
+    }
+
+    public Comments getComment(int index){
+        return this.comments.get(index);
+    }
+
+    public List<Comments> getComments(){
+        return this.comments;
+    }
+
+    public int getNumberOfComments(){
+        return this.comments.size();
+    }
+    
+    public void addComment(Comments comment){
+        this.comments.add(comment);
+    }
 }
