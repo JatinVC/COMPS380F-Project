@@ -6,21 +6,43 @@
 package ouhk.comps380f.fproject.model;
 
 import java.io.Serializable;
+import java.util.Base64;
 
 /**
  *
  * @author Jatin
  */
 public class Attachment implements Serializable{
-    private String name;
+    private long itemId;
+    private long id;
     private String mimeContentType;
+    private String attachmentName;
+    // the below will be converted to a base64 String
     private byte[] contents;
-    
-    public String getName(){
-        return this.name;
+    private String contentsString;
+
+    public long getId(){
+        return this.id;
     }
-    public void setName(String name){
-        this.name = name;
+
+    public void setId(long id){
+        this.id = id;
+    }
+
+    public long getItemId(){
+        return this.itemId;
+    }
+
+    public void setItemId(long itemId){
+        this.itemId = itemId;
+    }
+
+    public String getAttachmentName(){
+        return this.attachmentName;
+    }
+
+    public void setAttachmentName(String attachmentName){
+        this.attachmentName = attachmentName;
     }
 
     public String getMimeContentType(){
@@ -37,5 +59,13 @@ public class Attachment implements Serializable{
 
     public void setContents(byte[] contents){
         this.contents = contents;
+    }
+
+    public String getContentsString(){
+        return this.contentsString;
+    }
+
+    public void setContentsString(byte[] contents){
+        this.contentsString = Base64.getEncoder().encodeToString(contents);
     }
 }

@@ -81,16 +81,17 @@ public class ItemController {
 
         for (MultipartFile filePart : form.getAttachments()) {
             Attachment attachment = new Attachment();
-            attachment.setName(filePart.getOriginalFilename());
+            attachment.setAttachmentName(filePart.getOriginalFilename());
             attachment.setMimeContentType(filePart.getContentType());
             attachment.setContents(filePart.getBytes());
 
-            if (attachment.getName() != null && attachment.getName().length() > 0
+            if (attachment.getAttachmentName() != null && attachment.getAttachmentName().length() > 0
                     && attachment.getContents() != null && attachment.getContents().length > 0) {
                 item.addAttachment(attachment);
             }
         }
         this.itemDatabase.put(item.getId(), item);
+        //TODO: put the item in the database over here.
         return new RedirectView("/", true);
     }
 

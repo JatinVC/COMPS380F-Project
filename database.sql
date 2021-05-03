@@ -4,8 +4,8 @@
 	mostly will be get requests that will just reference the values for comparision
 */
 CREATE TABLE users (
-        user_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-        username VARCHAR(50) NOT NULL,
+	user_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+	username VARCHAR(50) NOT NULL,
 	password VARCHAR(50) NOT NULL,
 	PRIMARY KEY (user_id)
 );
