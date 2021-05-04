@@ -97,7 +97,8 @@ public class ItemController {
             }
         }
         this.itemDatabase.put(item.getId(), item);
-        //TODO: put the item in the database over here.
+        itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity());
+        //TODO: put the attachments into the database over here
         return new RedirectView("/", true);
     }
 

@@ -65,12 +65,11 @@ public class ItemRepositoryImpl implements ItemRepository{
             }
             return new ArrayList<>(map.values());
         }
-        
     }
 
     @Override
     @Transactional
-    public long createItem(final String itemName, final int price, final String description, final String availability) throws IOException {
+    public long createItem(final String itemName, final int price, final String description, final int availability) throws IOException {
         // TODO Auto-generated method stub
         final String SQL_INSERT_ITEM = "INSERT INTO items (item_name, item_price, item_description, item_availability) values (?,?,?,?)";
 
@@ -82,7 +81,7 @@ public class ItemRepositoryImpl implements ItemRepository{
                 ps.setString(1, itemName);
                 ps.setInt(2, price);
                 ps.setString(3, description);
-                ps.setString(4, availability);
+                ps.setInt(4, availability);
                 return ps;
             }
         }, keyHolder);
@@ -102,6 +101,7 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FoodItem> getItem(long id) {
         // TODO Auto-generated method stub
         final String SQL_SELECT_ITEM = "select * from items where item_id = ?";
@@ -109,6 +109,7 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
+    @Transactional
     public void updateItem(long itemId, String itemName, int price, String description, String availability) throws IOException {
         // TODO Auto-generated method stub
         final String SQL_UPDATE_ITEM = "UPDATE items SET item_name=?, item_price=?, item_description=?, item_availability=? WHERE item_id = ?";
@@ -117,11 +118,11 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
+    @Transactional
     public void deleteItem(long itemId) {
         // TODO Auto-generated method stub
         final String SQL_DELETE_ITEM = "DELETE FROM items WHERE item_id = ?";
         jdbcOp.update(SQL_DELETE_ITEM, itemId);
         System.out.println("Item " + itemId + " deleted");        
     }
-    
 }

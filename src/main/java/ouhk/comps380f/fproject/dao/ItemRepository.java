@@ -15,7 +15,7 @@ import ouhk.comps380f.fproject.model.FoodItem;
  */
 public interface ItemRepository {
     
-    public long createItem(String itemName, int price, String description, String availability) throws IOException;
+    public long createItem(String itemName, int price, String description, int availability) throws IOException;
 
     public List<FoodItem> getItems();
     

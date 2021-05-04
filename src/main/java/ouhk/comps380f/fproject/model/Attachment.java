@@ -68,4 +68,8 @@ public class Attachment implements Serializable{
     public void setContentsString(byte[] contents){
         this.contentsString = Base64.getEncoder().encodeToString(contents);
     }
+
+    public void setContentsString(String contents){
+        this.contentsString = contents;
+    }
 }
