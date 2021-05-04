@@ -25,6 +25,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import ouhk.comps380f.fproject.model.FoodItem;
@@ -33,6 +34,7 @@ import ouhk.comps380f.fproject.model.FoodItem;
  *
  * @author Jatin
  */
+@Repository
 public class ItemRepositoryImpl implements ItemRepository{
 
     private final JdbcOperations jdbcOp;

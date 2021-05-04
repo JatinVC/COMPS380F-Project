@@ -37,6 +37,14 @@ CREATE TABLE items (
 	item_availability INTEGER NOT NULL DEFAULT 100,
 	PRIMARY KEY(item_id)
 );
+/* 
+	items example
+*/
+INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Computer', 5000,'I am a computer, i can be use to coding!',500);
+INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Mobile', 8000,'I am a mobile phone , i can be use to watch animation!!',300);
+INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Headset', 80,'I am a Headset , i can be use to listen music!!',400);
+
+
 
 /* 
 	item comments

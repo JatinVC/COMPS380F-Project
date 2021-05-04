@@ -10,8 +10,10 @@ import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
+import ouhk.comps380f.fproject.dao.ItemRepository;
 
 import ouhk.comps380f.fproject.model.Attachment;
 import ouhk.comps380f.fproject.model.FoodItem;
@@ -30,7 +33,10 @@ import ouhk.comps380f.fproject.model.FoodItem;
 @Controller
 @RequestMapping("/items")
 public class ItemController {
-
+    
+    @Resource
+    private ItemRepository ItemRepo;
+    
     private volatile long ITEM_ID_SEQUENCE = 1;
     private Map<Long, FoodItem> itemDatabase = new Hashtable<>();
 
@@ -40,7 +46,7 @@ public class ItemController {
         return new ModelAndView("addItem", "itemForm", new FoodForm());
     }
 
-    public static class FoodForm implements Serializable{
+    public static class FoodForm implements Serializable {
 
         private String name;
         private int price;
@@ -98,9 +104,10 @@ public class ItemController {
     private synchronized long getNextItemId() {
         return this.ITEM_ID_SEQUENCE++;
     }
-
     @GetMapping("")
-    public String itemInfo() {
+    public String itemInfo(ModelMap model) {
+        System.out.print(ItemRepo.getItems());
+        ModelMap addAttribute = model.addAttribute("Items",ItemRepo.getItems());
         return "itemInfo";
     }
 
@@ -119,5 +126,3 @@ public class ItemController {
         return "itemThree";
     }
 }
-
-
