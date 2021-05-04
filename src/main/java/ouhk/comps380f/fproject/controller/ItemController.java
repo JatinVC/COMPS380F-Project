@@ -35,7 +35,7 @@ import ouhk.comps380f.fproject.model.FoodItem;
 public class ItemController {
     
     @Resource
-    private ItemRepository ItemRepo;
+    private ItemRepository itemRepo;
     
     private volatile long ITEM_ID_SEQUENCE = 1;
     private Map<Long, FoodItem> itemDatabase = new Hashtable<>();
@@ -106,8 +106,8 @@ public class ItemController {
     }
     @GetMapping("")
     public String itemInfo(ModelMap model) {
-        System.out.print(ItemRepo.getItems());
-        ModelMap addAttribute = model.addAttribute("Items",ItemRepo.getItems());
+        System.out.print(itemRepo.getItems());
+        model.addAttribute("Items",itemRepo.getItems());
         return "itemInfo";
     }
 

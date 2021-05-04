@@ -7,17 +7,12 @@ package ouhk.comps380f.fproject.dao;
 
 import java.io.IOException;
 import java.util.List;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
-import ouhk.comps380f.fproject.model.Attachment;
 import ouhk.comps380f.fproject.model.FoodItem;
-import ouhk.comps380f.fproject.model.Comments;
 
 /**
  *
  * @author Jatin
  */
-@Repository
 public interface ItemRepository {
     
     public long createItem(String itemName, int price, String description, String availability) throws IOException;
