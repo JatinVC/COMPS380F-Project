@@ -125,4 +125,8 @@ public class ItemController {
     public String itemThree() {
         return "itemThree";
     }
+    @GetMapping("/viewCart")
+    public String viewCart() {
+        return "viewCart";
+    }
 }
