@@ -18,7 +18,7 @@
     <b:bean id="dataSource"
             class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <b:property name="driverClassName" value="org.apache.derby.jdbc.ClientDriver" />
-        <b:property name="url" value="jdbc:derby://localhost:1527/foodfast" />
+        <b:property name="url" value="jdbc:derby://localhost:1527/custsupport" />
         <b:property name="username" value="nbuser" />
         <b:property name="password" value="nbuser" />
     </b:bean> 

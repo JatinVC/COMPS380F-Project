@@ -10,7 +10,7 @@
       <a href="<c:url value="/items/itemTwo" />">Mobile</a><br /><br />
        <a href="<c:url value="/items/itemThree" />">Headset</a><br /><br />
        <c:forEach items="${Items}" var="items">
-              <a href="<c:url value="/items/itemThree" />">${items.Items_id}</a><br /><br />
+              <a href="<c:url value="/items/${items.id}" />">${items.foodName}</a><br /><br />
        </c:forEach>
       
      
