@@ -76,7 +76,7 @@ public class PictureRepositoryImpl implements PictureRepository{
         jdbcOp.update(new PreparedStatementCreator(){
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException{
-                PreparedStatement ps = connection.prepareStatement(SQL_INSERT_ATTACHMENT);
+                PreparedStatement ps = connection.prepareStatement(SQL_INSERT_ATTACHMENT, new String[]{"picture_id"});
                 ps.setLong(1, itemId);
                 ps.setString(2, pictureName);
                 ps.setString(3, mimetype);
