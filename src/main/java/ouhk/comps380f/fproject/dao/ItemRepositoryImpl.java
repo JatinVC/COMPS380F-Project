@@ -85,36 +85,41 @@ public class ItemRepositoryImpl implements ItemRepository{
             }
         }, keyHolder);
 
-        Long item_id = keyHolder.getKey().longValue();
-        System.out.println("Item " + Long.toString(item_id) + " inserted");
+        Long itemId = keyHolder.getKey().longValue();
+        System.out.println("Item " + Long.toString(itemId) + " inserted");
 
-        return item_id;
+        return itemId;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<FoodItem> getItems() {
         // TODO Auto-generated method stub
-        return null;
+        final String SQL_SELECT_ITEMS = "select * from items";
+        return jdbcOp.query(SQL_SELECT_ITEMS, new ItemExtractor());
     }
 
     @Override
     public List<FoodItem> getItem(long id) {
         // TODO Auto-generated method stub
-        return null;
+        final String SQL_SELECT_ITEM = "select * from items where item_id = ?";
+        return jdbcOp.query(SQL_SELECT_ITEM, new ItemExtractor(), id);
     }
 
     @Override
-    public void updateItem(long itemId, String itemName, int price, String description, String availability)
-            throws IOException {
+    public void updateItem(long itemId, String itemName, int price, String description, String availability) throws IOException {
         // TODO Auto-generated method stub
-        
+        final String SQL_UPDATE_ITEM = "UPDATE items SET item_name=?, item_price=?, item_description=?, item_availability=? WHERE item_id = ?";
+        jdbcOp.update(SQL_UPDATE_ITEM, itemName, price, description, availability, itemId);    
+        System.out.println("Item " + itemId + " updated");   
     }
 
     @Override
     public void deleteItem(long itemId) {
         // TODO Auto-generated method stub
-        
+        final String SQL_DELETE_ITEM = "DELETE FROM items WHERE item_id = ?";
+        jdbcOp.update(SQL_DELETE_ITEM, itemId);
+        System.out.println("Item " + itemId + " deleted");        
     }
     
 }
