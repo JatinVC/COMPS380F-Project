@@ -7,6 +7,7 @@ package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +16,19 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
-import ouhk.comps380f.fproject.dao.ItemRepository;
 
+import ouhk.comps380f.fproject.dao.CommentRepository;
+import ouhk.comps380f.fproject.dao.ItemRepository;
+import ouhk.comps380f.fproject.dao.PictureRepository;
 import ouhk.comps380f.fproject.model.Attachment;
+import ouhk.comps380f.fproject.model.Comments;
 import ouhk.comps380f.fproject.model.FoodItem;
 
 /**
@@ -36,6 +41,10 @@ public class ItemController {
     
     @Resource
     private ItemRepository itemRepo;
+    @Resource
+    private PictureRepository pictureRepo;
+    @Resource
+    private CommentRepository commentRepo;
     
     private volatile long ITEM_ID_SEQUENCE = 1;
     private Map<Long, FoodItem> itemDatabase = new Hashtable<>();
@@ -85,6 +94,7 @@ public class ItemController {
         item.setFoodName(form.getName());
         item.setPrice(form.getPrice());
 
+        
         for (MultipartFile filePart : form.getAttachments()) {
             Attachment attachment = new Attachment();
             attachment.setAttachmentName(filePart.getOriginalFilename());
@@ -98,7 +108,10 @@ public class ItemController {
         }
         this.itemDatabase.put(item.getId(), item);
         itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity());
-        //TODO: put the attachments into the database over here
+        for(Attachment attachment : item.getAttachments()){
+            attachment.setContentsString(attachment.getContents());
+            pictureRepo.createPicture(attachment.getAttachmentName(), attachment.getMimeContentType(), attachment.getContentsString(), attachment.getItemId());
+        }
         return new RedirectView("/", true);
     }
 
@@ -129,5 +142,44 @@ public class ItemController {
     @GetMapping("/viewCart")
     public String viewCart() {
         return "viewCart";
+    }
+
+    @GetMapping("/{itemId}/comment")
+    public ModelAndView commentForm(@PathVariable("itemId") long itemId){
+        return new ModelAndView("commentForm", "commentForm", new CommentForm());
+    }
+
+    private static class CommentForm implements Serializable{
+        private String commentContent;
+        private Date date;
+
+        //getters and settings
+        public String getCommentContent(){
+            return this.commentContent;
+        }
+
+        public void setCommentContent(String commentContent){
+            this.commentContent = commentContent;
+        }        
+
+        public Date getDate(){
+            return this.date;
+        }
+
+        public void setDate(Date date){
+            this.date = date;
+        }
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public View create(CommentForm form, @PathVariable("itemId") long itemId) throws IOException {
+        Comments comment = new Comments();
+        comment.setContent(form.getCommentContent());
+        comment.setDate(new Date());
+        comment.setItemId(itemId);
+        comment.setUserId(getNextItemId());
+        //add the comment to the database.
+        commentRepo.createComment(comment.getUserId(), comment.getItemId(), comment.getContent(), (java.sql.Date) comment.getDate());
+        return new RedirectView("/", true);
     }
 }
