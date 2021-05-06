@@ -15,10 +15,10 @@
                    <c:param name="item" value="${items.foodName}" />
                </c:url>">Add to cart</a><br /><br /> 
         </c:forEach>
+     
 
 
 
 
-
-    </body>
+</body>
 </html>

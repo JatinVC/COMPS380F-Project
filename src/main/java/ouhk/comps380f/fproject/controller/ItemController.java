@@ -121,7 +121,7 @@ public class ItemController {
         return this.ITEM_ID_SEQUENCE++;
     }
 
-    @GetMapping("")
+    @GetMapping("itemInfo")
     public String itemInfo(ModelMap model) {
         model.addAttribute("Items", itemRepo.getItems());
         return "itemInfo";
