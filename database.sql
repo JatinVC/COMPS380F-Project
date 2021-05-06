@@ -53,6 +53,7 @@ INSERT INTO items(item_name, item_price,item_description,item_availability) VALU
 	item comments
 */
 
+
 CREATE TABLE item_comments(
 	comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	user_id INTEGER NOT NULL,

@@ -126,8 +126,14 @@ public class ItemController {
         return "itemInfo";
     }
 
+    @GetMapping("/delete/{idForDelete}")
+    public View deleteItem(@PathVariable("idForDelete") int idForDelete) {
+        itemRepo.deleteItem(idForDelete);
+        return new RedirectView("/items/itemInfo", true);
+    }
+
     @GetMapping(value = "/itemInfo/{id}")
-    public  String item(@PathVariable("id") int id,ModelMap model) {
+    public String item(@PathVariable("id") int id, ModelMap model) {
         model.addAttribute("Items", itemRepo.getItem(id));
         model.addAttribute("pictures", pictureRepo.getAttachments(id));
         model.addAttribute("comments", commentRepo.getComments(id));

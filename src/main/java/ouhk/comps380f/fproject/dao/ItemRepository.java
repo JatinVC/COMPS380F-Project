@@ -14,11 +14,11 @@ import ouhk.comps380f.fproject.model.FoodItem;
  * @author Jatin
  */
 public interface ItemRepository {
-    
+
     public long createItem(String itemName, int price, String description, int availability) throws IOException;
 
     public List<FoodItem> getItems();
-    
+
     public List<FoodItem> getItem(long id);
 
     public void updateItem(long itemId, String itemName, int price, String description, String availability) throws IOException;

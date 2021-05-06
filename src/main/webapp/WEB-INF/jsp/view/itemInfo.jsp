@@ -17,6 +17,8 @@
                    <c:param name=" action" value="addToCart" />
                 <c:param name="item" value="${items.foodName}" />
                 </c:url>">Add to cart</a><br /><br />
+                 [<a href="<c:url value="/items/delete/${items.id}"/>">Delete</a>]
+               
             </c:forEach>
         </div>
     </body>
