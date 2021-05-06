@@ -72,31 +72,21 @@ CREATE TABLE item_comments(
 CREATE TABLE item_picture(
 	picture_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	item_id INTEGER NOT NULL,
-	picture_name VARCHAR(50) NOT NULL,
-	picture_mimetype VARCHAR(50) NOT NULL,
-	picture_data VARCHAR(250) NOT NULL,
+	picture_name VARCHAR(50) NULL,
+	picture_mimetype VARCHAR(50) NULL,
+	picture_data BLOB DEFAULT NULL,
 	FOREIGN KEY (item_id) REFERENCES items(item_id),
 	PRIMARY KEY (picture_id)
 );
+
+Delete from item_picture;
+ALTER TABLE item_picture ALTER COLUMN picture_id RESTART WITH 1;
 
 /*
 
 	order system
 	this is filled in once an order is complete
 */
-Delete from item_picture;
-ALTER TABLE item_picture ALTER COLUMN picture_id RESTART WITH 1;
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (1,'https://hongkongliving.com/wp-content/uploads/2020/05/Emmer-Pizza-HK.jpg','pizza1','pizza1');
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (1,'https://d2d5f3568fvb9s.cloudfront.net/wp-content/uploads/2020/07/20165100/aurelien-lemasson-theobald-x00CzBt4Dfk-unsplash-960x500.jpg','pizza2','pizza2');
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (1,'https://www.sassyhongkong.com/wp-content/uploads/2020/01/eat-drink-best-pizza-hong-kong-500x500.jpg','pizza3','pizza3');
-
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (2,'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/1200px-RedDot_Burger.jpg','Hamburger1','Hamburger1');
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (2,'https://littlesunnykitchen.com/wp-content/uploads/2019/09/Air-fryer-hamburgers-6.jpg','Hamburger2','Hamburger2');
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (2,'https://s01.sgp1.cdn.digitaloceanspaces.com/article/143395-pysnzzzleh-1593090551.jpg','Hamburger3','Hamburger3');
-
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (3,'https://www.kikkoman.com/homecook/search/recipe/img/00005163.jpg','Sushi1','Sushi1');
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (3,'https://cdn.asiatatler.com/asiatatler/i/hk/2018/11/06132336-story-image-105298_cover_1000x817.jpg','Sushi2','Sushi2');
-INSERT INTO item_picture(item_id,picture_data,picture_name,picture_mimetype) VALUES (3,'https://media-cdn.tripadvisor.com/media/photo-s/14/7a/a7/f9/koh-sushi.jpg','Sushi3','Sushi3');
 CREATE TABLE orders(
 	order_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	user_id INTEGER NOT NULL,

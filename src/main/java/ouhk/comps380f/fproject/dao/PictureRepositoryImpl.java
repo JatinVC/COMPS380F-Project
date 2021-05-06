@@ -58,7 +58,7 @@ public class PictureRepositoryImpl implements PictureRepository{
                     attachment.setItemId(rs.getLong("item_id"));
                     attachment.setAttachmentName(rs.getString("picture_name"));
                     attachment.setMimeContentType(rs.getString("picture_mimetype"));
-                    attachment.setContentsString(rs.getString("picture_data"));
+                    attachment.setContents(rs.getBytes("picture_data"));
                     map.put(id, attachment);
                 }
             }
@@ -68,7 +68,7 @@ public class PictureRepositoryImpl implements PictureRepository{
 
     @Override
     @Transactional
-    public long createPicture(final String pictureName, final String mimetype, final String data, final long itemId) {
+    public long createPicture(final String pictureName, final String mimetype,final long itemId, final byte[] data) {
         // TODO Auto-generated method stub
         final String SQL_INSERT_ATTACHMENT = "INSERT INTO item_picture(item_id, picture_name, picture_mimetype, picture_data) VALUES (?,?,?,?)";
 
@@ -80,7 +80,7 @@ public class PictureRepositoryImpl implements PictureRepository{
                 ps.setLong(1, itemId);
                 ps.setString(2, pictureName);
                 ps.setString(3, mimetype);
-                ps.setString(4, data);
+                ps.setBytes(4, data);
                 return ps;            
             }
         }, keyHolder);
@@ -109,7 +109,7 @@ public class PictureRepositoryImpl implements PictureRepository{
 
     @Override
     @Transactional
-    public void updateAttachment(long itemId, long id, String pictureName, String mimetype, String data) {
+    public void updateAttachment(long itemId, long id, String pictureName, String mimetype, byte[] data) {
         // TODO Auto-generated method stub
         final String SQL_UPDATE_ATTACHMENT = "UPDATE item_picture SET itemId = ?, picture_name = ?, picture_mimetype = ?, picture_data = ? where picture_id = ?";
         jdbcOp.update(SQL_UPDATE_ATTACHMENT, itemId, pictureName, mimetype, data, id);  

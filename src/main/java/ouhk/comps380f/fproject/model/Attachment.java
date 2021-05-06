@@ -13,42 +13,30 @@ import java.util.Base64;
  * @author Jatin
  */
 public class Attachment implements Serializable {
-
-    private long itemId;
     private long id;
+    private long itemId;
     private String mimeContentType;
     private String attachmentName;
-        private String picdata;
-    // the below will be converted to a base64 String
     private byte[] contents;
-    private String contentsString;
 
 
     public Attachment() {
         //empty constructor
     }
 
-    public Attachment(long id, long itemid, String picName, String mimeContentType, String picdata) {
+    public Attachment(long id, long itemId, String name, String mimeContentType, byte[] contents) {
         this.id = id;
-        this.itemId = itemid;
-        this.attachmentName = picName;
+        this.attachmentName = name;
         this.mimeContentType = mimeContentType;
-        this.contentsString = picdata;
+        this.itemId = itemId;
+        this.contents = contents;
     }
 
-    public String getPicdata() {
-        return this.picdata;
-    }
-
-    public void setPicdata(String picdata) {
-        this.picdata = picdata;
-    }
-
-    public long getId() {
+    public long getId(){
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(long id){
         this.id = id;
     }
 
@@ -82,17 +70,5 @@ public class Attachment implements Serializable {
 
     public void setContents(byte[] contents) {
         this.contents = contents;
-    }
-
-    public String getContentsString() {
-        return this.contentsString;
-    }
-
-    public void setContentsString(byte[] contents) {
-        this.contentsString = Base64.getEncoder().encodeToString(contents);
-    }
-
-    public void setContentsString(String contents) {
-        this.contentsString = contents;
     }
 }

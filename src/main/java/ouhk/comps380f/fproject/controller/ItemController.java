@@ -111,8 +111,7 @@ public class ItemController {
         this.itemDatabase.put(item.getId(), item);
         itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity());
         for (Attachment attachment : item.getAttachments()) {
-            attachment.setContentsString(attachment.getContents());
-            pictureRepo.createPicture(attachment.getAttachmentName(), attachment.getMimeContentType(), attachment.getContentsString(), attachment.getItemId());
+            pictureRepo.createPicture(attachment.getAttachmentName(), attachment.getMimeContentType(), attachment.getItemId(), attachment.getContents());
         }
         return new RedirectView("/", true);
     }
@@ -131,6 +130,7 @@ public class ItemController {
     public  String item(@PathVariable("id") int id,ModelMap model) {
         model.addAttribute("Items", itemRepo.getItem(id));
         model.addAttribute("pictures", pictureRepo.getAttachments(id));
+        model.addAttribute("comments", commentRepo.getComments(id));
         return "itemPage";
     }
 
