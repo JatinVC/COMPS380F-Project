@@ -4,7 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:context="http://www.springframework.org/schema/context"
          xmlns:tx="http://www.springframework.org/schema/tx"         
-
+         xmlns:jpa="http://www.springframework.org/schema/data/jpa"
          xsi:schemaLocation="http://www.springframework.org/schema/beans 
             http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/security 
@@ -12,7 +12,9 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/tx
-            http://www.springframework.org/schema/tx/spring-tx.xsd"
+            http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/data/jpa
+            http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
 >
 
     <b:bean id="dataSource"
@@ -22,15 +24,58 @@
         <b:property name="username" value="nbuser" />
         <b:property name="password" value="nbuser" />
     </b:bean> 
-
-    <!-- dataSource TransactionManager -->
+    <b:bean id="hibernateJpaVendorAdapter"
+            class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+    
     <b:bean id="transactionManager"
             class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <b:property name="dataSource" ref="dataSource" />
     </b:bean>
+    
+    <b:bean id="transactionManager"
+            class="org.springframework.orm.jpa.JpaTransactionManager">
+        <b:property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </b:bean>
+    
+    <tx:annotation-driven/>
+    
+    <jpa:repositories base-package="ouhk.comps380f.fproject.dao"/>
+
 
     <!-- Enable annotation driven transaction management -->
     <tx:annotation-driven transaction-manager="transactionManager" />
 
     <context:component-scan base-package="ouhk.comps380f.fproject.dao" />
+    
+    <!-- Login System -->
+    <http auto-config="true">
+        <intercept-url pattern="/items" access="hasRole('ADMIN')" />
+        <form-login login-page="/login" authentication-failure-url="/login?error" />
+        <logout logout-success-url="/login?logout"
+                invalidate-session="true"
+                delete-cookies="JSESSIONID" />
+        <remember-me key="SystemSupportSecret" token-validity-seconds="86400" />
+    </http>
+
+    <context:annotation-config />
+    
+    <b:bean id="UserService" class="ouhk.comps380f.fproject.service.UserService" />
+    
+    <authentication-manager>
+        <authentication-provider user-service-ref="UserService" />
+    </authentication-manager>
+    <b:bean id="entityManagerFactory"
+            class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <b:property name="dataSource" ref="dataSource"/>
+        <b:property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter"/>
+        <!-- Set JPA properties -->
+        <b:property name="jpaProperties">
+            <b:props>
+                <b:prop key="hibernate.dialect">org.hibernate.dialect.DerbyDialect</b:prop>
+                <b:prop key="hibernate.show_sql">true</b:prop>
+            </b:props>
+        </b:property>
+        <!-- Set base package of your entities -->
+        <b:property name="packagesToScan" value="ouhk.comps380f.fproject.model"/>
+    </b:bean>
 </b:beans>
