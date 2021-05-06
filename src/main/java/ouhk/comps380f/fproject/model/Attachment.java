@@ -18,7 +18,7 @@ public class Attachment implements Serializable {
     private String mimeContentType;
     private String attachmentName;
     private byte[] contents;
-
+    private String stringContents;
 
     public Attachment() {
         //empty constructor
@@ -70,5 +70,13 @@ public class Attachment implements Serializable {
 
     public void setContents(byte[] contents) {
         this.contents = contents;
+    }
+
+    public void setStringContents(){
+        this.stringContents =  Base64.getEncoder().encodeToString(this.contents);
+    }
+
+    public String getStringContents(){
+        return this.stringContents;
     }
 }
