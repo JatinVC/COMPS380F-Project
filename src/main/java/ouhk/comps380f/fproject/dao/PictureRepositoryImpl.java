@@ -5,6 +5,7 @@
  */
 package ouhk.comps380f.fproject.dao;
 
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -22,6 +24,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -80,7 +83,9 @@ public class PictureRepositoryImpl implements PictureRepository{
                 ps.setLong(1, itemId);
                 ps.setString(2, pictureName);
                 ps.setString(3, mimetype);
-                ps.setBytes(4, data);
+                Blob blob = null;
+                blob = new SerialBlob(data);
+                ps.setBlob(4, blob);
                 return ps;            
             }
         }, keyHolder);
@@ -89,6 +94,21 @@ public class PictureRepositoryImpl implements PictureRepository{
         System.out.println("Attachment " + Long.toString(pictureId) + " inserted");
 
         return pictureId;
+    }
+
+    private static final class AttachmentRowMapper implements RowMapper<Attachment> {
+        @Override
+        public Attachment mapRow(ResultSet rs, int rowNum) throws SQLException {
+            // TODO Auto-generated method stub
+            Attachment entry = new Attachment();
+            entry.setAttachmentName(rs.getString("picture_name"));
+            entry.setMimeContentType(rs.getString("picture_mimetype"));
+            Blob blob = rs.getBlob("picture_data");
+            byte[] bytes = blob.getBytes(1l, (int) blob.length());
+            entry.setContents(bytes);
+            entry.setItemId(rs.getLong("item_id"));
+            return entry;
+        }
     }
 
     @Override
@@ -104,7 +124,7 @@ public class PictureRepositoryImpl implements PictureRepository{
     public List<Attachment> getAttachment(long id, long itemId) {
         // TODO Auto-generated method stub
         final String SQL_SELECT_ATTACHMENT = "select * from item_picture where picture_id = ? and item_id = ?";
-        return jdbcOp.query(SQL_SELECT_ATTACHMENT, new AttachmentExtractor(), id, itemId);
+        return jdbcOp.query(SQL_SELECT_ATTACHMENT, new AttachmentRowMapper(), id, itemId);
     }
 
     @Override

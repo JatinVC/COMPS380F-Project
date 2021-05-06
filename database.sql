@@ -20,11 +20,18 @@ CREATE TABLE users (
 CREATE TABLE user_roles (
 	user_role_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	user_id INTEGER NOT NULL,
+        username VARCHAR(50) NOT NULL,
 	role VARCHAR(50) NOT NULL,
 	PRIMARY KEY (user_role_id),
 	FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-
+INSERT INTO users(username,password)VALUES ('keith', '{noop}keithpw');
+INSERT INTO user_roles(user_id,username, role) VALUES (1,'keith', 'ROLE_USER');
+INSERT INTO user_roles(user_id,username, role) VALUES (1,'keith', 'ROLE_ADMIN');
+INSERT INTO users (username,password)VALUES ('vanessa', '{noop}vanessapw');
+INSERT INTO user_roles(user_id,username, role) VALUES (2,'vanessa', 'ROLE_ADMIN');
+INSERT INTO users (username,password)VALUES ('kevin', '{noop}kevinpw');
+INSERT INTO user_roles(user_id,username, role) VALUES (3,'kevin', 'ROLE_USER');
 /* 
 	items
 */
@@ -53,6 +60,7 @@ INSERT INTO items(item_name, item_price,item_description,item_availability) VALU
 	item comments
 */
 
+
 CREATE TABLE item_comments(
 	comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	user_id INTEGER NOT NULL,
@@ -72,18 +80,14 @@ CREATE TABLE item_comments(
 CREATE TABLE item_picture(
 	picture_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	item_id INTEGER NOT NULL,
-	picture_name VARCHAR(50) NULL,
-	picture_mimetype VARCHAR(50) NULL,
-	picture_data BLOB DEFAULT NULL,
+	picture_name VARCHAR(50) NOT NULL,
+	picture_mimetype VARCHAR(50) NOT NULL,
+	picture_data BLOB NOT NULL,
 	FOREIGN KEY (item_id) REFERENCES items(item_id),
 	PRIMARY KEY (picture_id)
 );
 
-Delete from item_picture;
-ALTER TABLE item_picture ALTER COLUMN picture_id RESTART WITH 1;
-
 /*
-
 	order system
 	this is filled in once an order is complete
 */
