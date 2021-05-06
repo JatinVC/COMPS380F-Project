@@ -12,6 +12,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,14 +41,14 @@ import ouhk.comps380f.fproject.model.FoodItem;
 @Controller
 @RequestMapping("/items")
 public class ItemController {
-    
+
     @Resource
     private ItemRepository itemRepo;
     @Resource
     private PictureRepository pictureRepo;
     @Resource
     private CommentRepository commentRepo;
-    
+
     private volatile long ITEM_ID_SEQUENCE = 1;
     private Map<Long, FoodItem> itemDatabase = new Hashtable<>();
 
@@ -94,7 +97,6 @@ public class ItemController {
         item.setFoodName(form.getName());
         item.setPrice(form.getPrice());
 
-        
         for (MultipartFile filePart : form.getAttachments()) {
             Attachment attachment = new Attachment();
             attachment.setAttachmentName(filePart.getOriginalFilename());
@@ -108,7 +110,7 @@ public class ItemController {
         }
         this.itemDatabase.put(item.getId(), item);
         itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity());
-        for(Attachment attachment : item.getAttachments()){
+        for (Attachment attachment : item.getAttachments()) {
             attachment.setContentsString(attachment.getContents());
             pictureRepo.createPicture(attachment.getAttachmentName(), attachment.getMimeContentType(), attachment.getContentsString(), attachment.getItemId());
         }
@@ -118,55 +120,49 @@ public class ItemController {
     private synchronized long getNextItemId() {
         return this.ITEM_ID_SEQUENCE++;
     }
+
     @GetMapping("")
     public String itemInfo(ModelMap model) {
-        System.out.print(itemRepo.getItems());
-        model.addAttribute("Items",itemRepo.getItems());
+        model.addAttribute("Items", itemRepo.getItems());
         return "itemInfo";
     }
 
-    @GetMapping("/itemOne")
-    public String itemOne() {
-        return "itemOne";
+    @GetMapping(value = "/{id}")
+    public  String item(@PathVariable("id") int id,ModelMap model) {
+        model.addAttribute("Items", itemRepo.getItem(id));
+        model.addAttribute("pictures", pictureRepo.getAttachments(id));
+        return "itemPage";
     }
 
-    @GetMapping("/itemTwo")
-    public String itemTwo() {
-        return "itemTwo";
-    }
-
-    @GetMapping("/itemThree")
-    public String itemThree() {
-        return "itemThree";
-    }
     @GetMapping("/viewCart")
     public String viewCart() {
         return "viewCart";
     }
 
     @GetMapping("/{itemId}/comment")
-    public ModelAndView commentForm(@PathVariable("itemId") long itemId){
+    public ModelAndView commentForm(@PathVariable("itemId") long itemId) {
         return new ModelAndView("commentForm", "commentForm", new CommentForm());
     }
 
-    private static class CommentForm implements Serializable{
+    private static class CommentForm implements Serializable {
+
         private String commentContent;
         private Date date;
 
         //getters and settings
-        public String getCommentContent(){
+        public String getCommentContent() {
             return this.commentContent;
         }
 
-        public void setCommentContent(String commentContent){
+        public void setCommentContent(String commentContent) {
             this.commentContent = commentContent;
-        }        
+        }
 
-        public Date getDate(){
+        public Date getDate() {
             return this.date;
         }
 
-        public void setDate(Date date){
+        public void setDate(Date date) {
             this.date = date;
         }
     }
