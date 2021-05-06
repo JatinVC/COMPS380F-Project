@@ -127,7 +127,7 @@ public class ItemController {
         return "itemInfo";
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/itemInfo/{id}")
     public  String item(@PathVariable("id") int id,ModelMap model) {
         model.addAttribute("Items", itemRepo.getItem(id));
         model.addAttribute("pictures", pictureRepo.getAttachments(id));
