@@ -7,6 +7,7 @@ package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -62,7 +63,9 @@ public class ItemController {
 
         private String name;
         private int price;
+        private String description;
         private List<MultipartFile> attachments;
+        private int quantity;
 
         public String getName() {
             return this.name;
@@ -72,12 +75,28 @@ public class ItemController {
             this.name = name;
         }
 
+        public String getDescription() {
+            return this.description;
+        }
+
+        public void setDescription(String description){
+            this.description = description;
+        }
+
         public int getPrice() {
             return this.price;
         }
 
         public void setPrice(int price) {
             this.price = price;
+        }
+
+        public int getQuantity(){
+            return this.quantity;
+        }
+
+        public void setQuantity(int quantity){
+            this.quantity = quantity;
         }
 
         public List<MultipartFile> getAttachments() {
@@ -93,26 +112,16 @@ public class ItemController {
     @PostMapping("/create")
     public View create(FoodForm form) throws IOException {
         FoodItem item = new FoodItem();
-        item.setId(this.getNextItemId());
         item.setFoodName(form.getName());
         item.setPrice(form.getPrice());
-
+        item.setQuantity(form.getQuantity());
+        item.setDescription(form.getDescription());
+        List<MultipartFile> attachments = new ArrayList<>();
         for (MultipartFile filePart : form.getAttachments()) {
-            Attachment attachment = new Attachment();
-            attachment.setAttachmentName(filePart.getOriginalFilename());
-            attachment.setMimeContentType(filePart.getContentType());
-            attachment.setContents(filePart.getBytes());
-
-            if (attachment.getAttachmentName() != null && attachment.getAttachmentName().length() > 0
-                    && attachment.getContents() != null && attachment.getContents().length > 0) {
-                item.addAttachment(attachment);
-            }
+            attachments.add(filePart);
         }
-        this.itemDatabase.put(item.getId(), item);
-        itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity());
-        for (Attachment attachment : item.getAttachments()) {
-            pictureRepo.createPicture(attachment.getAttachmentName(), attachment.getMimeContentType(), attachment.getItemId(), attachment.getContents());
-        }
+        long itemId = itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity(), attachments);
+        item.setId(itemId);
         return new RedirectView("/", true);
     }
 
@@ -120,7 +129,7 @@ public class ItemController {
         return this.ITEM_ID_SEQUENCE++;
     }
 
-    @GetMapping("itemInfo")
+    @GetMapping("iteminfo")
     public String itemInfo(ModelMap model) {
         model.addAttribute("Items", itemRepo.getItems());
         return "itemInfo";
@@ -138,6 +147,12 @@ public class ItemController {
         model.addAttribute("pictures", pictureRepo.getAttachments(id));
         model.addAttribute("comments", commentRepo.getComments(id));
         return "itemPage";
+    }
+
+    @GetMapping("/{itemId}/edit")
+    public ModelAndView editItem(ModelMap model, @PathVariable("itemId") long id) throws IOException{
+        model.addAttribute("item", itemRepo.getItem(id));
+        return new ModelAndView("editItemForm", "itemForm", new FoodForm());
     }
 
     @GetMapping("/viewCart")

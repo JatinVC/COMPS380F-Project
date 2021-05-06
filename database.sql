@@ -73,15 +73,12 @@ CREATE TABLE item_comments(
 CREATE TABLE item_picture(
 	picture_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	item_id INTEGER NOT NULL,
-	picture_name VARCHAR(50) NULL,
-	picture_mimetype VARCHAR(50) NULL,
-	picture_data BLOB DEFAULT NULL,
+	picture_name VARCHAR(50) NOT NULL,
+	picture_mimetype VARCHAR(50) NOT NULL,
+	picture_data BLOB NOT NULL,
 	FOREIGN KEY (item_id) REFERENCES items(item_id),
 	PRIMARY KEY (picture_id)
 );
-
-Delete from item_picture;
-ALTER TABLE item_picture ALTER COLUMN picture_id RESTART WITH 1;
 
 /*
 

@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +24,16 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.support.lob.DefaultLobHandler;
+import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import ouhk.comps380f.fproject.model.Attachment;
 import ouhk.comps380f.fproject.model.FoodItem;
 
 /**
@@ -35,25 +41,25 @@ import ouhk.comps380f.fproject.model.FoodItem;
  * @author Jatin
  */
 @Repository
-public class ItemRepositoryImpl implements ItemRepository{
+public class ItemRepositoryImpl implements ItemRepository {
 
     private final JdbcOperations jdbcOp;
 
     @Autowired
-    public ItemRepositoryImpl(DataSource datasource){
+    public ItemRepositoryImpl(DataSource datasource) {
         jdbcOp = new JdbcTemplate(datasource);
     }
 
-    private static final class ItemExtractor implements ResultSetExtractor<List<FoodItem>>{
+    private static final class ItemExtractor implements ResultSetExtractor<List<FoodItem>> {
 
         @Override
         public List<FoodItem> extractData(ResultSet rs) throws SQLException, DataAccessException {
             // TODO Auto-generated method stub
             Map<Long, FoodItem> map = new HashMap<>();
-            while (rs.next()){
+            while (rs.next()) {
                 Long id = rs.getLong("item_id");
                 FoodItem item = map.get(id);
-                if(item == null){
+                if (item == null) {
                     item = new FoodItem();
                     item.setId(id);
                     item.setFoodName(rs.getString("item_name"));
@@ -62,6 +68,14 @@ public class ItemRepositoryImpl implements ItemRepository{
                     item.setQuantity(rs.getInt("item_availability"));
                     map.put(id, item);
                 }
+                String filename = rs.getString("filename");
+                if (filename != null) {
+                    Attachment attachment = new Attachment();
+                    attachment.setAttachmentName(rs.getString("picture_name"));
+                    attachment.setMimeContentType(rs.getString("picture_mimetype"));
+                    attachment.setItemId(id);
+                    item.addAttachment(attachment);
+                }
             }
             return new ArrayList<>(map.values());
         }
@@ -69,15 +83,17 @@ public class ItemRepositoryImpl implements ItemRepository{
 
     @Override
     @Transactional
-    public long createItem(final String itemName, final int price, final String description, final int availability) throws IOException {
+    public long createItem(final String itemName, final int price, final String description, final int availability,
+            List<MultipartFile> attachments) throws IOException {
         // TODO Auto-generated method stub
         final String SQL_INSERT_ITEM = "INSERT INTO items (item_name, item_price, item_description, item_availability) values (?,?,?,?)";
+        final String SQL_INSERT_ATTACHMENT = "INSERT INTO item_picture(item_id, picture_name, picture_data, picture_mimetype) values (?,?,?,?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcOp.update(new PreparedStatementCreator(){
+        jdbcOp.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement ps = connection.prepareStatement(SQL_INSERT_ITEM, new String[]{"item_id"});
+                PreparedStatement ps = connection.prepareStatement(SQL_INSERT_ITEM, new String[] { "item_id" });
                 ps.setString(1, itemName);
                 ps.setInt(2, price);
                 ps.setString(3, description);
@@ -88,6 +104,19 @@ public class ItemRepositoryImpl implements ItemRepository{
 
         Long itemId = keyHolder.getKey().longValue();
         System.out.println("Item " + Long.toString(itemId) + " inserted");
+
+        for (MultipartFile filePart : attachments) {
+            if (filePart.getOriginalFilename() != null && filePart.getSize() > 0) {
+                LobHandler handler = new DefaultLobHandler();
+                jdbcOp.update(SQL_INSERT_ATTACHMENT,
+                        new Object[] { filePart.getOriginalFilename(),
+                                new SqlLobValue(filePart.getInputStream(), (int) filePart.getSize(), handler),
+                                filePart.getContentType(), itemId },
+                        new int[] { Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.INTEGER });
+
+                System.out.println("Attachment " + filePart.getOriginalFilename() + " of item " + itemId + " inserted");
+            }
+        }
 
         return itemId;
     }
@@ -110,11 +139,26 @@ public class ItemRepositoryImpl implements ItemRepository{
 
     @Override
     @Transactional
-    public void updateItem(long itemId, String itemName, int price, String description, String availability) throws IOException {
+    public void updateItem(long itemId, String itemName, int price, String description, String availability,
+            List<MultipartFile> attachments) throws IOException {
         // TODO Auto-generated method stub
-        final String SQL_UPDATE_ITEM = "UPDATE items SET item_name=?, item_price=?, item_description=?, item_availability=? WHERE item_id = ?";
-        jdbcOp.update(SQL_UPDATE_ITEM, itemName, price, description, availability, itemId);    
-        System.out.println("Item " + itemId + " updated");   
+        final String SQL_UPDATE_ITEM = "UPDATE items SET item_name=?, item_price=?, item_description=?, item_availability=? WHERE item_id=?";
+        final String SQL_INSERT_ATTACHMENT = "INSERT INTO item_picture(item_id, picture_name, picture_data, picture_mimetype) values (?,?,?,?)";
+        jdbcOp.update(SQL_UPDATE_ITEM, itemName, price, description, availability, itemId);
+        System.out.println("Item " + itemId + " updated");
+
+        for (MultipartFile filePart : attachments) {
+            if (filePart.getOriginalFilename() != null && filePart.getSize() > 0) {
+                LobHandler handler = new DefaultLobHandler();
+                jdbcOp.update(SQL_INSERT_ATTACHMENT,
+                        new Object[] { filePart.getOriginalFilename(),
+                                new SqlLobValue(filePart.getInputStream(), (int) filePart.getSize(), handler),
+                                filePart.getContentType(), itemId },
+                        new int[] { Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.INTEGER });
+
+                System.out.println("Attachment " + filePart.getOriginalFilename() + " of item " + itemId + " inserted");
+            }
+        }
     }
 
     @Override
@@ -122,7 +166,12 @@ public class ItemRepositoryImpl implements ItemRepository{
     public void deleteItem(long itemId) {
         // TODO Auto-generated method stub
         final String SQL_DELETE_ITEM = "DELETE FROM items WHERE item_id = ?";
+        //no cascade delete so need to delete everything in the 3 tables related here
+        final String SQL_DELETE_ATTACHMENT = "DELETE FROM item_picture WHERE item_id = ?";
+        final String SQL_DELETE_COMMENTS = "DELETE FROM item_comments WHERE item_id = ?";
+        jdbcOp.update(SQL_DELETE_ATTACHMENT, itemId);
+        jdbcOp.update(SQL_DELETE_COMMENTS, itemId);
         jdbcOp.update(SQL_DELETE_ITEM, itemId);
-        System.out.println("Item " + itemId + " deleted");        
+        System.out.println("Item " + itemId + " deleted");
     }
 }

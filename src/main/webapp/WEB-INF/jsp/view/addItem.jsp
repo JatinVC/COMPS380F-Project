@@ -18,6 +18,8 @@
             <form:input type="text" path="name" /><br />
             <form:label path="price">Price</form:label><br />
             <form:input type="text" path="price" /><br />
+            <form:label path="description">Description</form:label><br />
+            <form:input type="text" path="description" /><br />
             <input type="file" name="attachments" multiple="multiple" /><br /><br />
             <input type="submit" value="Submit">
         </form:form>
