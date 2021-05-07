@@ -129,7 +129,7 @@ public class ItemController {
         return this.ITEM_ID_SEQUENCE++;
     }
 
-    @GetMapping("iteminfo")
+    @GetMapping("itemInfo")
     public String itemInfo(ModelMap model) {
         model.addAttribute("Items", itemRepo.getItems());
         return "itemInfo";
@@ -140,7 +140,7 @@ public class ItemController {
         itemRepo.deleteItem(idForDelete);
         return new RedirectView("/items/itemInfo", true);
     }
-
+      
     @GetMapping(value = "/itemInfo/{id}")
     public String item(@PathVariable("id") int id, ModelMap model) {
         model.addAttribute("Items", itemRepo.getItem(id));
