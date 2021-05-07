@@ -65,16 +65,8 @@ public class ItemRepositoryImpl implements ItemRepository {
                     item.setFoodName(rs.getString("item_name"));
                     item.setPrice(rs.getInt("item_price"));
                     item.setDescription(rs.getString("item_description"));
-                    item.setQuantity(rs.getInt("item_availability"));
+                    item.setQuantity(rs.getBoolean("item_availability"));
                     map.put(id, item);
-                }
-                String filename = rs.getString("filename");
-                if (filename != null) {
-                    Attachment attachment = new Attachment();
-                    attachment.setAttachmentName(rs.getString("picture_name"));
-                    attachment.setMimeContentType(rs.getString("picture_mimetype"));
-                    attachment.setItemId(id);
-                    item.addAttachment(attachment);
                 }
             }
             return new ArrayList<>(map.values());
@@ -83,11 +75,9 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     @Transactional
-    public long createItem(final String itemName, final int price, final String description, final int availability,
-            List<MultipartFile> attachments) throws IOException {
+    public long createItem(final String itemName, final int price, final String description, final Boolean availability) throws IOException {
         // TODO Auto-generated method stub
         final String SQL_INSERT_ITEM = "INSERT INTO items (item_name, item_price, item_description, item_availability) values (?,?,?,?)";
-        final String SQL_INSERT_ATTACHMENT = "INSERT INTO item_picture(item_id, picture_name, picture_data, picture_mimetype) values (?,?,?,?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcOp.update(new PreparedStatementCreator() {
@@ -97,26 +87,13 @@ public class ItemRepositoryImpl implements ItemRepository {
                 ps.setString(1, itemName);
                 ps.setInt(2, price);
                 ps.setString(3, description);
-                ps.setInt(4, availability);
+                ps.setBoolean(4, availability);
                 return ps;
             }
         }, keyHolder);
 
         Long itemId = keyHolder.getKey().longValue();
         System.out.println("Item " + Long.toString(itemId) + " inserted");
-
-        for (MultipartFile filePart : attachments) {
-            if (filePart.getOriginalFilename() != null && filePart.getSize() > 0) {
-                LobHandler handler = new DefaultLobHandler();
-                jdbcOp.update(SQL_INSERT_ATTACHMENT,
-                        new Object[] { filePart.getOriginalFilename(),
-                                new SqlLobValue(filePart.getInputStream(), (int) filePart.getSize(), handler),
-                                filePart.getContentType(), itemId },
-                        new int[] { Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.INTEGER });
-
-                System.out.println("Attachment " + filePart.getOriginalFilename() + " of item " + itemId + " inserted");
-            }
-        }
 
         return itemId;
     }
@@ -139,26 +116,11 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     @Transactional
-    public void updateItem(long itemId, String itemName, int price, String description, String availability,
-            List<MultipartFile> attachments) throws IOException {
+    public void updateItem(long itemId, String itemName, int price, String description, Boolean availability) throws IOException {
         // TODO Auto-generated method stub
         final String SQL_UPDATE_ITEM = "UPDATE items SET item_name=?, item_price=?, item_description=?, item_availability=? WHERE item_id=?";
-        final String SQL_INSERT_ATTACHMENT = "INSERT INTO item_picture(item_id, picture_name, picture_data, picture_mimetype) values (?,?,?,?)";
         jdbcOp.update(SQL_UPDATE_ITEM, itemName, price, description, availability, itemId);
         System.out.println("Item " + itemId + " updated");
-
-        for (MultipartFile filePart : attachments) {
-            if (filePart.getOriginalFilename() != null && filePart.getSize() > 0) {
-                LobHandler handler = new DefaultLobHandler();
-                jdbcOp.update(SQL_INSERT_ATTACHMENT,
-                        new Object[] { filePart.getOriginalFilename(),
-                                new SqlLobValue(filePart.getInputStream(), (int) filePart.getSize(), handler),
-                                filePart.getContentType(), itemId },
-                        new int[] { Types.VARCHAR, Types.BLOB, Types.VARCHAR, Types.INTEGER });
-
-                System.out.println("Attachment " + filePart.getOriginalFilename() + " of item " + itemId + " inserted");
-            }
-        }
     }
 
     @Override

@@ -17,7 +17,7 @@ public class FoodItem implements Serializable{
     private String foodName;
     private int price;
     private String description;
-    private int quantity;
+    private Boolean quantity;
     private List<Attachment> attachments;
     private List<Comments> comments;
 
@@ -26,7 +26,7 @@ public class FoodItem implements Serializable{
         //empty constructor
     }
 
-    public FoodItem(long id, String foodName, int price, String description, int quantity){
+    public FoodItem(long id, String foodName, int price, String description, Boolean quantity){
         this.id = id;
         this.foodName = foodName;
         this.price = price;
@@ -66,11 +66,11 @@ public class FoodItem implements Serializable{
         this.description = description;
     }
 
-    public int getQuantity(){
+    public Boolean getQuantity(){
         return this.quantity;
     }
 
-    public void setQuantity(int quantity){
+    public void setQuantity(Boolean quantity){
         this.quantity = quantity;
     }
     

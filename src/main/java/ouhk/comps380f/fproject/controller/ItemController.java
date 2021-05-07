@@ -7,6 +7,7 @@ package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -17,6 +18,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.jdbc.core.support.SqlLobValue;
+import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -65,7 +68,7 @@ public class ItemController {
         private int price;
         private String description;
         private List<MultipartFile> attachments;
-        private int quantity;
+        private Boolean quantity;
 
         public String getName() {
             return this.name;
@@ -91,11 +94,11 @@ public class ItemController {
             this.price = price;
         }
 
-        public int getQuantity(){
+        public Boolean getQuantity(){
             return this.quantity;
         }
 
-        public void setQuantity(int quantity){
+        public void setQuantity(Boolean quantity){
             this.quantity = quantity;
         }
 
@@ -116,12 +119,12 @@ public class ItemController {
         item.setPrice(form.getPrice());
         item.setQuantity(form.getQuantity());
         item.setDescription(form.getDescription());
-        List<MultipartFile> attachments = new ArrayList<>();
-        for (MultipartFile filePart : form.getAttachments()) {
-            attachments.add(filePart);
-        }
-        long itemId = itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity(), attachments);
+        long itemId = itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity());
         item.setId(itemId);
+        for (MultipartFile filePart : form.getAttachments()) {
+            //create items here
+            pictureRepo.createPicture(filePart.getOriginalFilename(), filePart.getContentType(), itemId, filePart.getInputStream());
+        }
         return new RedirectView("/", true);
     }
 

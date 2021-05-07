@@ -5,6 +5,7 @@
  */
 package ouhk.comps380f.fproject.dao;
 
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,6 +26,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -61,7 +63,9 @@ public class PictureRepositoryImpl implements PictureRepository{
                     attachment.setItemId(rs.getLong("item_id"));
                     attachment.setAttachmentName(rs.getString("picture_name"));
                     attachment.setMimeContentType(rs.getString("picture_mimetype"));
-                    attachment.setContents(rs.getBytes("picture_data"));
+                    Blob blob = rs.getBlob("picture_data");
+                    byte[] data = blob.getBytes(1l, (int) blob.length());
+                    attachment.setContents(data);
                     map.put(id, attachment);
                 }
             }
@@ -71,7 +75,7 @@ public class PictureRepositoryImpl implements PictureRepository{
 
     @Override
     @Transactional
-    public long createPicture(final String pictureName, final String mimetype,final long itemId, final byte[] data) {
+    public long createPicture(final String pictureName, final String mimetype,final long itemId, final InputStream blob) {
         // TODO Auto-generated method stub
         final String SQL_INSERT_ATTACHMENT = "INSERT INTO item_picture(item_id, picture_name, picture_mimetype, picture_data) VALUES (?,?,?,?)";
 
@@ -83,8 +87,6 @@ public class PictureRepositoryImpl implements PictureRepository{
                 ps.setLong(1, itemId);
                 ps.setString(2, pictureName);
                 ps.setString(3, mimetype);
-                Blob blob = null;
-                blob = new SerialBlob(data);
                 ps.setBlob(4, blob);
                 return ps;            
             }
@@ -129,10 +131,10 @@ public class PictureRepositoryImpl implements PictureRepository{
 
     @Override
     @Transactional
-    public void updateAttachment(long itemId, long id, String pictureName, String mimetype, byte[] data) {
+    public void updateAttachment(long itemId, long id, String pictureName, String mimetype, InputStream blob) {
         // TODO Auto-generated method stub
         final String SQL_UPDATE_ATTACHMENT = "UPDATE item_picture SET itemId = ?, picture_name = ?, picture_mimetype = ?, picture_data = ? where picture_id = ?";
-        jdbcOp.update(SQL_UPDATE_ATTACHMENT, itemId, pictureName, mimetype, data, id);  
+        jdbcOp.update(SQL_UPDATE_ATTACHMENT, itemId, pictureName, mimetype, blob, id);  
         System.out.println("Attachment " + id + " updated");      
     }
 

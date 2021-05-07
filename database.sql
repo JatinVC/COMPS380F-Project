@@ -41,7 +41,7 @@ CREATE TABLE items (
 	item_name VARCHAR(50) NOT NULL,
 	item_price INTEGER NOT NULL,
 	item_description VARCHAR(250) NOT NULL,
-	item_availability INTEGER NOT NULL DEFAULT 100,
+	item_availability BOOLEAN NOT NULL DEFAULT true,
 	PRIMARY KEY(item_id)
 );
 /* 
