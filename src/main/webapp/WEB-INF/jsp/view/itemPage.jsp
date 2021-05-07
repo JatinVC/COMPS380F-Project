@@ -27,6 +27,9 @@
                 </c:forEach>
                 <p>Price:${items.price}HKD</p>
                 <p>availability of the item:${items.quantity}</p>
+                  [<a href="<c:url value="/items/setAvaToTrue/${items.id}"/>">Set it to Yes</a>]
+                  <a href="<c:url value="/items/setAvaToFalse/${items.id}"/>">Set it to No</a>]
+                  
                 <p>Comments:</p>
                 <ul>
                     <c:forEach items="${comments}" var="comment">

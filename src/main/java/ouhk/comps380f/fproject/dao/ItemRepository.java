@@ -15,7 +15,7 @@ import ouhk.comps380f.fproject.model.FoodItem;
  * @author Jatin
  */
 public interface ItemRepository {
-    
+
     public long createItem(String itemName, int price, String description, Boolean availability) throws IOException;
 
     public List<FoodItem> getItems();
@@ -25,4 +25,8 @@ public interface ItemRepository {
     public void updateItem(long itemId, String itemName, int price, String description, Boolean availability) throws IOException;
 
     public void deleteItem(long itemId);
+
+    public void setAvaToFalse(long itemId);
+
+    public void setAvaToTrue(long itemId);
 }

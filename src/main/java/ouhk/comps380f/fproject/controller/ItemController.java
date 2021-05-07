@@ -82,7 +82,7 @@ public class ItemController {
             return this.description;
         }
 
-        public void setDescription(String description){
+        public void setDescription(String description) {
             this.description = description;
         }
 
@@ -94,11 +94,11 @@ public class ItemController {
             this.price = price;
         }
 
-        public Boolean getQuantity(){
+        public Boolean getQuantity() {
             return this.quantity;
         }
 
-        public void setQuantity(Boolean quantity){
+        public void setQuantity(Boolean quantity) {
             this.quantity = quantity;
         }
 
@@ -132,7 +132,7 @@ public class ItemController {
         return this.ITEM_ID_SEQUENCE++;
     }
 
-    @GetMapping("iteminfo")
+    @GetMapping("itemInfo")
     public String itemInfo(ModelMap model) {
         model.addAttribute("Items", itemRepo.getItems());
         return "itemInfo";
@@ -143,7 +143,25 @@ public class ItemController {
         itemRepo.deleteItem(idForDelete);
         return new RedirectView("/items/itemInfo", true);
     }
-      
+
+    @GetMapping("/setAvaToFalse/{idForSet2}")
+    public View setAvaToFalse(@PathVariable("idForSet2") int idForSet2) {
+        itemRepo.setAvaToFalse(idForSet2);
+        RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl("/items/itemInfo/{idForSet2}");
+        return rv;
+    }
+
+    @GetMapping("/setAvaToTrue/{idForSet}")
+    public View setAvaToTrue(@PathVariable("idForSet") int idForSet) {
+        itemRepo.setAvaToTrue(idForSet);
+        RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl("/items/itemInfo/{idForSet}");
+        return rv;
+    }
+
     @GetMapping("/itemInfo/{id}")
     public String item(@PathVariable("id") int id, ModelMap model) {
         model.addAttribute("Items", itemRepo.getItem(id));
@@ -153,7 +171,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}/edit")
-    public ModelAndView editItem(ModelMap model, @PathVariable("itemId") long id) throws IOException{
+    public ModelAndView editItem(ModelMap model, @PathVariable("itemId") long id) throws IOException {
         model.addAttribute("item", itemRepo.getItem(id));
         return new ModelAndView("editItemForm", "itemForm", new FoodForm());
     }

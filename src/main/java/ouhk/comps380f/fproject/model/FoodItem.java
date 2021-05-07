@@ -31,7 +31,7 @@ public class FoodItem implements Serializable{
         this.foodName = foodName;
         this.price = price;
         this.description = description;
-        this.quantity = quantity;
+     
     }
 
     public long getId(){

@@ -136,4 +136,16 @@ public class ItemRepositoryImpl implements ItemRepository {
         jdbcOp.update(SQL_DELETE_ITEM, itemId);
         System.out.println("Item " + itemId + " deleted");
     }
+    @Override
+    @Transactional
+    public void setAvaToFalse(long itemId) {
+        final String SQL_UPDATE_ITEM = "UPDATE items SET item_availability=false WHERE item_id=?";
+        jdbcOp.update(SQL_UPDATE_ITEM, itemId);
+    }
+    @Override
+    @Transactional
+    public void setAvaToTrue(long itemId) {
+        final String SQL_UPDATE_ITEM = "UPDATE items SET item_availability=true WHERE item_id=?";
+        jdbcOp.update(SQL_UPDATE_ITEM, itemId);
+    }
 }

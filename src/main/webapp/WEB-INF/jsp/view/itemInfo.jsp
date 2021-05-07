@@ -16,8 +16,9 @@
                 <a href="<c:url value="">
                    <c:param name=" action" value="addToCart" />
                 <c:param name="item" value="${items.foodName}" />
-                </c:url>">Add to cart</a><br /><br />
+                </c:url>">Add to cart</a>
                  [<a href="<c:url value="/380fproject/items/delete/${items.id}"/>">Delete</a>]
+                 <br/>
                
             </c:forEach>
         </div>

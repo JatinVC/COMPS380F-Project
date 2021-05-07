@@ -50,9 +50,9 @@ CREATE TABLE items (
 
 Delete from items;
 ALTER TABLE items ALTER COLUMN item_id RESTART WITH 1;
-INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Pizza', 50,'A dish of Italian origin, consisting of a flat round base of dough baked with a topping of tomatoes and cheese, typically with added meat, fish, or vegetables.',500);
-INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Hamburger', 80,'A hamburger (also burger for short) is a sandwich consisting of one or more cooked patties of ground meat, usually beef, placed inside a sliced bread roll or bun. The patty may be pan fried, grilled, smoked or flame broiled.',300);
-INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Sushi', 80,'Sushi is a traditional Japanese dish of prepared vinegared rice (鮨飯, sushi-meshi), usually with some sugar and salt, accompanying a variety of ingredients',400);
+INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Pizza', 50,'A dish of Italian origin, consisting of a flat round base of dough baked with a topping of tomatoes and cheese, typically with added meat, fish, or vegetables.',false);
+INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Hamburger', 80,'A hamburger (also burger for short) is a sandwich consisting of one or more cooked patties of ground meat, usually beef, placed inside a sliced bread roll or bun. The patty may be pan fried, grilled, smoked or flame broiled.',true);
+INSERT INTO items(item_name, item_price,item_description,item_availability) VALUES ('Sushi', 80,'Sushi is a traditional Japanese dish of prepared vinegared rice (鮨飯, sushi-meshi), usually with some sugar and salt, accompanying a variety of ingredients',true);
 
 
 
