@@ -7,6 +7,9 @@ CREATE TABLE users (
 	user_id INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
 	username VARCHAR(50) NOT NULL,
 	password VARCHAR(50) NOT NULL,
+	fullname VARCHAR(50) ,
+	phonenumber VARCHAR(50) ,
+	address VARCHAR(50) ,
 	PRIMARY KEY (user_id)
 );
 
