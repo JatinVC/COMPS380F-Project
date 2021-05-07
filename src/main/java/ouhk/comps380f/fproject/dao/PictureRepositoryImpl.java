@@ -123,10 +123,10 @@ public class PictureRepositoryImpl implements PictureRepository{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Attachment> getAttachment(long id, long itemId) {
+    public Attachment getAttachment(long id, long itemId) {
         // TODO Auto-generated method stub
         final String SQL_SELECT_ATTACHMENT = "select * from item_picture where picture_id = ? and item_id = ?";
-        return jdbcOp.query(SQL_SELECT_ATTACHMENT, new AttachmentRowMapper(), id, itemId);
+        return (Attachment) jdbcOp.query(SQL_SELECT_ATTACHMENT, new AttachmentRowMapper(), id, itemId);
     }
 
     @Override

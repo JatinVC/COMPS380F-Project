@@ -23,6 +23,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -61,6 +62,7 @@ public class CommentRepositoryImpl implements CommentRepository{
                     comment.setItemId(rs.getLong("item_id"));
                     comment.setContent(rs.getString("comment_content"));
                     comment.setDate(rs.getDate("comment_date"));
+                    comment.setUsername(rs.getString("username"));
                     map.put(id, comment);
                 }
             }
@@ -97,16 +99,33 @@ public class CommentRepositoryImpl implements CommentRepository{
     @Transactional(readOnly = true)
     public List<Comments> getComments(long itemId) {
         // TODO Auto-generated method stub
-        final String SQL_SELECT_COMMENTS = "SELECT * FROM item_comments WHERE item_id = ?";
+        final String SQL_SELECT_COMMENTS = "SELECT c.*, u.username FROM item_comments AS c, users AS u WHERE item_id = ? AND c.user_id = u.user_id";
         return jdbcOp.query(SQL_SELECT_COMMENTS, new CommentExtractor(), itemId);
+    }
+
+    private static final class CommentRowMapper implements RowMapper<Comments>{
+
+        @Override
+        public Comments mapRow(ResultSet rs, int rowNum) throws SQLException {
+            // TODO Auto-generated method stub
+            Comments comment = new Comments();
+            comment.setItemId(rs.getLong("item_id"));
+            comment.setId(rs.getLong("comment_id"));
+            comment.setUserId(rs.getLong("user_id"));
+            comment.setDate(rs.getDate("comment_date"));
+            comment.setContent(rs.getString("comment_content"));
+            comment.setUsername(rs.getString("username"));
+            return comment;
+        }
     }
 
     @Override
     @Transactional
-    public List<Comments> getComment(long id) {
+    public Comments getComment(long id) {
         // TODO Auto-generated method stub
-        final String SQL_SELECT_COMMENT = "SELECT * FROM item_comments WHERE comment_id = ?";
-        return jdbcOp.query(SQL_SELECT_COMMENT, new CommentExtractor(), id);
+        //TODO: change the SQL to query for username as well please
+        final String SQL_SELECT_COMMENT = "SELECT c.item_id, c.comment_id, c.user_id, c.comment_date, c.comment_content, u.username FROM item_comments AS c, users AS u WHERE comment_id = ? AND c.user_id = u.user_id";
+        return (Comments) jdbcOp.query(SQL_SELECT_COMMENT, new CommentRowMapper(), id);
     }
 
     @Override

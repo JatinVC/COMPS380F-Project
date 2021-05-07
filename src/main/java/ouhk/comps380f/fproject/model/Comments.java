@@ -18,17 +18,19 @@ public class Comments implements Serializable{
     private long itemId;
     private String content;
     private Date date;
+    private String username;
 
     public Comments(){
         //this is an empty constructor
     }
 
-    public Comments(long id, long userId, long itemId, String content){
+    public Comments(long id, long userId, long itemId, String content, String username){
         this.id = id;
         this.userId = userId;
         this.itemId = itemId;
         this.content = content;
         this.date = new Date();
+        this.username = username;
     }
 
     //getters and setters
@@ -70,5 +72,13 @@ public class Comments implements Serializable{
 
     public void setDate(Date date){
         this.date = date;
+    }
+
+    public String getUsername(){
+        return this.username;
+    }
+
+    public void setUsername(String username){
+        this.username = username;
     }
 }

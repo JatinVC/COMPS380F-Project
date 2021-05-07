@@ -23,7 +23,8 @@
                 <P> ${items.description}</p>
                 <p>Photos:</p>
                 <c:forEach items="${pictures}" var="pic">
-                    <img src="${pic.contentsString}" width="100px" height="100px" alt="alt" />
+                    ${pic.setStringContents()}
+                    <img src="data:${pic.getMimeContentType()};base64,${pic.getStringContents()}" width="100px" height="100px" alt="alt" />
                 </c:forEach>
                 <p>Price:${items.price}HKD</p>
                 <p>availability of the item:${items.quantity}</p>
@@ -33,8 +34,10 @@
                 <p>Comments:</p>
                 <ul>
                     <c:forEach items="${comments}" var="comment">
-                        <li>%{comment.getContent()}</li>
+                        <h4>${comment.getUsername()}</h4>
+                        <li>${comment.getDate()}: ${comment.getContent()}</li>
                         <li></li>
+                        <hr>
                     </c:forEach>
                 </ul>
             </c:forEach>

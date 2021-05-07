@@ -22,7 +22,7 @@ public interface PictureRepository {
 
     public List<Attachment> getAttachments(long itemId);
 
-    public List<Attachment> getAttachment(long id, long itemId);
+    public Attachment getAttachment(long id, long itemId);
 
     public void updateAttachment(long itemId, long id, String pictureName, String mimetype, InputStream blob);
 

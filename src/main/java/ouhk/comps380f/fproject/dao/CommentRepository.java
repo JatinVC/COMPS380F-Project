@@ -19,7 +19,7 @@ public interface CommentRepository {
 
     public List<Comments> getComments(long itemId);
 
-    public List<Comments> getComment(long id);
+    public Comments getComment(long id);
 
     public void updateComment(long id, String comment, Date date);
 

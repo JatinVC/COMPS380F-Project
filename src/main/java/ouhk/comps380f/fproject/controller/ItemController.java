@@ -7,19 +7,14 @@ package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.jdbc.core.support.SqlLobValue;
-import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +29,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import ouhk.comps380f.fproject.dao.CommentRepository;
 import ouhk.comps380f.fproject.dao.ItemRepository;
 import ouhk.comps380f.fproject.dao.PictureRepository;
-import ouhk.comps380f.fproject.model.Attachment;
 import ouhk.comps380f.fproject.model.Comments;
 import ouhk.comps380f.fproject.model.FoodItem;
 
@@ -53,8 +47,7 @@ public class ItemController {
     @Resource
     private CommentRepository commentRepo;
 
-    private volatile long ITEM_ID_SEQUENCE = 1;
-    private Map<Long, FoodItem> itemDatabase = new Hashtable<>();
+    private long ITEM_ID_SEQUENCE = 1;
 
     // TODO only admins are allowed on this route.
     @GetMapping("/create")
@@ -68,7 +61,6 @@ public class ItemController {
         private int price;
         private String description;
         private List<MultipartFile> attachments;
-        private Boolean quantity;
 
         public String getName() {
             return this.name;
@@ -94,14 +86,6 @@ public class ItemController {
             this.price = price;
         }
 
-        public Boolean getQuantity() {
-            return this.quantity;
-        }
-
-        public void setQuantity(Boolean quantity) {
-            this.quantity = quantity;
-        }
-
         public List<MultipartFile> getAttachments() {
             return this.attachments;
         }
@@ -117,7 +101,6 @@ public class ItemController {
         FoodItem item = new FoodItem();
         item.setFoodName(form.getName());
         item.setPrice(form.getPrice());
-        item.setQuantity(form.getQuantity());
         item.setDescription(form.getDescription());
         long itemId = itemRepo.createItem(item.getFoodName(), item.getPrice(), item.getDescription(), item.getQuantity());
         item.setId(itemId);
@@ -132,16 +115,10 @@ public class ItemController {
         return this.ITEM_ID_SEQUENCE++;
     }
 
-    @GetMapping("itemInfo")
+    @GetMapping("/list")
     public String itemInfo(ModelMap model) {
         model.addAttribute("Items", itemRepo.getItems());
         return "itemInfo";
-    }
-
-    @GetMapping("/delete/{idForDelete}")
-    public View deleteItem(@PathVariable("idForDelete") int idForDelete) {
-        itemRepo.deleteItem(idForDelete);
-        return new RedirectView("/items/itemInfo", true);
     }
 
     @GetMapping("/setAvaToFalse/{idForSet2}")
@@ -162,7 +139,7 @@ public class ItemController {
         return rv;
     }
 
-    @GetMapping("/itemInfo/{id}")
+    @GetMapping("/{id}")
     public String item(@PathVariable("id") int id, ModelMap model) {
         model.addAttribute("Items", itemRepo.getItem(id));
         model.addAttribute("pictures", pictureRepo.getAttachments(id));
@@ -170,10 +147,25 @@ public class ItemController {
         return "itemPage";
     }
 
-    @GetMapping("/{itemId}/edit")
-    public ModelAndView editItem(ModelMap model, @PathVariable("itemId") long id) throws IOException {
-        model.addAttribute("item", itemRepo.getItem(id));
-        return new ModelAndView("editItemForm", "itemForm", new FoodForm());
+    @GetMapping("/{id}/edit")
+    public ModelAndView editItem(ModelMap model, @PathVariable("id") long id) throws IOException{
+        Map<String, Object> models = new HashMap<>();
+        List<FoodItem> item = itemRepo.getItem(id);
+        models.put("item", item.get(0));
+        models.put("itemForm", new FoodForm());
+        return new ModelAndView("editItemForm", models);
+    }
+
+    @PostMapping("/{id}/edit")
+    public View updateItem(FoodForm form, @PathVariable("id") Long id) throws IOException{
+        itemRepo.updateItem(id, form.getName(), form.getPrice(), form.getDescription(), true);
+        return new RedirectView("/items/"+id.toString());
+    }
+
+    @GetMapping("/{id}/delete")
+    public View deleteItem(@PathVariable("id") int id) {
+        itemRepo.deleteItem(id);
+        return new RedirectView("/items/list", true);
     }
 
     @GetMapping("/viewCart")
@@ -209,15 +201,15 @@ public class ItemController {
         }
     }
 
-    @PostMapping("/{itemId}/comment")
-    public View create(CommentForm form, @PathVariable("itemId") long itemId) throws IOException {
-        Comments comment = new Comments();
-        comment.setContent(form.getCommentContent());
-        comment.setDate(new Date());
-        comment.setItemId(itemId);
-        comment.setUserId(getNextItemId());
-        //add the comment to the database.
-        commentRepo.createComment(comment.getUserId(), comment.getItemId(), comment.getContent(), (java.sql.Date) comment.getDate());
-        return new RedirectView("/", true);
-    }
+    // @PostMapping("/{itemId}/comment")
+    // public View create(CommentForm form, @PathVariable("itemId") long itemId) throws IOException {
+    //     Comments comment = new Comments();
+    //     comment.setContent(form.getCommentContent());
+    //     comment.setDate(new Date());
+    //     comment.setItemId(itemId);
+    //     comment.setUserId(getNextItemId());
+    //     //add the comment to the database.
+    //     commentRepo.createComment(comment.getUserId(), comment.getItemId(), comment.getContent(), (java.sql.Date) comment.getDate());
+    //     return new RedirectView("/", true);
+    // }
 }

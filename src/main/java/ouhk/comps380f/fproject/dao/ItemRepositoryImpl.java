@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,16 +23,11 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.lob.DefaultLobHandler;
-import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import ouhk.comps380f.fproject.model.Attachment;
 import ouhk.comps380f.fproject.model.FoodItem;
 
 /**
@@ -87,7 +81,7 @@ public class ItemRepositoryImpl implements ItemRepository {
                 ps.setString(1, itemName);
                 ps.setInt(2, price);
                 ps.setString(3, description);
-                ps.setBoolean(4, availability);
+                ps.setBoolean(4, true);
                 return ps;
             }
         }, keyHolder);
