@@ -50,7 +50,6 @@
     <!-- Login System -->
     <http auto-config="true">
         <intercept-url pattern="/user/list/**" access="hasRole('ADMIN')" />
-        
         <form-login login-page="/login" authentication-failure-url="/login?error" />
         <logout logout-success-url="/login?logout"
                 invalidate-session="true"

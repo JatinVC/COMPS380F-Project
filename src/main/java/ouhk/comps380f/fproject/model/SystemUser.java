@@ -22,6 +22,9 @@ public class SystemUser implements Serializable {
     @Id
     private String username;
     private String password;
+    private String fullName;
+    private String phoneNumber;
+    private String address;
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRole> roles = new ArrayList<>();
@@ -29,13 +32,17 @@ public class SystemUser implements Serializable {
     public SystemUser() {
     }
 
-    public SystemUser(String username, String password, String[] roles) {
+    public SystemUser(String username, String password, String[] roles, String fullName, String phoneNumber, String address) {
         this.username = username;
-        this.password = "{noop}" + password;
+        this.password = "{noop}"+password;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
         for (String role : roles) {
             this.roles.add(new UserRole(this, role));
         }
     }
+
     public String getUsername() {
         return username;
     }
@@ -59,5 +66,29 @@ public class SystemUser implements Serializable {
     public void setRoles(List<UserRole> roles) {
         this.roles = roles;
     }
-    
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
 }
