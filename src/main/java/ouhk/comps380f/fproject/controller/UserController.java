@@ -128,7 +128,6 @@ public class UserController {
     @GetMapping("/update/{username}")
     public ModelAndView userUpdate(@PathVariable("username") String username, HttpServletRequest request) {
         Form updateForm = new Form();
-        
         if (!request.isUserInRole("ROLE_ADMIN")) {
             SystemUser user = UserRepo.findById(username).get();
             String truePassword = user.getPassword();
