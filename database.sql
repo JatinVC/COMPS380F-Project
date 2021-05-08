@@ -9,7 +9,7 @@ CREATE TABLE users (
 	password VARCHAR(50) NOT NULL,
 	fullname VARCHAR(50) ,
 	phonenumber VARCHAR(50) ,
-	address VARCHAR(50) ,
+	address VARCHAR(50),
 	PRIMARY KEY (user_id)
 );
 
@@ -28,12 +28,12 @@ CREATE TABLE user_roles (
 	PRIMARY KEY (user_role_id),
 	FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-INSERT INTO users(username,password)VALUES ('keith', '{noop}keithpw');
+INSERT INTO users(username,password)VALUES ('keith', '{noop}keithpw', 'Keith teacher', '+852 12345678', 'somewhere in hong kong');
 INSERT INTO user_roles(user_id,username, role) VALUES (1,'keith', 'ROLE_USER');
 INSERT INTO user_roles(user_id,username, role) VALUES (1,'keith', 'ROLE_ADMIN');
-INSERT INTO users (username,password)VALUES ('vanessa', '{noop}vanessapw');
+INSERT INTO users (username,password)VALUES ('vanessa', '{noop}vanessapw', 'Vanessa teacher', '+852 12345678', 'somewhere in hong kong');
 INSERT INTO user_roles(user_id,username, role) VALUES (2,'vanessa', 'ROLE_ADMIN');
-INSERT INTO users (username,password)VALUES ('kevin', '{noop}kevinpw');
+INSERT INTO users (username,password)VALUES ('kevin', '{noop}kevinpw', 'Kevin teacher', '+852 12345678', 'somewhere in hong kong');
 INSERT INTO user_roles(user_id,username, role) VALUES (3,'kevin', 'ROLE_USER');
 /* 
 	items
@@ -66,7 +66,6 @@ INSERT INTO items(item_name, item_price,item_description,item_availability) VALU
 
 CREATE TABLE item_comments(
 	comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-	user_id INTEGER NOT NULL,
 	item_id INTEGER NOT NULL,
 	comment_content VARCHAR(250) NOT NULL,
 	comment_date DATE,

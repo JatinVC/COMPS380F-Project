@@ -6,6 +6,7 @@
 package ouhk.comps380f.fproject.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -17,7 +18,7 @@ public class Comments implements Serializable{
     private long userId;
     private long itemId;
     private String content;
-    private Date date;
+    private LocalDate date;
     private String username;
 
     public Comments(){
@@ -29,7 +30,7 @@ public class Comments implements Serializable{
         this.userId = userId;
         this.itemId = itemId;
         this.content = content;
-        this.date = new Date();
+        this.date = LocalDate.now();
         this.username = username;
     }
 
@@ -66,11 +67,11 @@ public class Comments implements Serializable{
         this.content = content;
     }
 
-    public Date getDate(){
+    public LocalDate getDate(){
         return this.date;
     }
 
-    public void setDate(Date date){
+    public void setDate(LocalDate date){
         this.date = date;
     }
 

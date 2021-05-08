@@ -24,7 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
-@RequestMapping("items/list")
+@RequestMapping("/cart")
 public class cartController {
      
     private final Map<Integer, String> cart = new Hashtable<>();

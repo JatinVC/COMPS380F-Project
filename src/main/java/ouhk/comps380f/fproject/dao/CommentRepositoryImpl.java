@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,7 +62,8 @@ public class CommentRepositoryImpl implements CommentRepository{
                     comment.setUserId(rs.getLong("user_id"));
                     comment.setItemId(rs.getLong("item_id"));
                     comment.setContent(rs.getString("comment_content"));
-                    comment.setDate(rs.getDate("comment_date"));
+                    LocalDate date = (LocalDate) rs.getObject("comment_date");
+                    comment.setDate(date);
                     comment.setUsername(rs.getString("username"));
                     map.put(id, comment);
                 }
@@ -72,19 +74,19 @@ public class CommentRepositoryImpl implements CommentRepository{
 
     @Override
     @Transactional(readOnly = true)
-    public long createComment(final Long userId, final long itemId, final String comment, final Date date) {
+    public long createComment(final long itemId, final String comment) {
         // TODO Auto-generated method stub
-        final String SQL_INSERT_COMMENT = "INSERT INTO item_comments (user_id, item_id, comment_content, comment_date) VALUES (?,?,?,?)";
+        final String SQL_INSERT_COMMENT = "INSERT INTO item_comments (item_id, comment_content, comment_date) VALUES (?,?,?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcOp.update(new PreparedStatementCreator(){
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                 PreparedStatement ps = connection.prepareStatement(SQL_INSERT_COMMENT, new String[]{"comment_id"});
-                ps.setLong(1, userId);
-                ps.setLong(2, itemId);
-                ps.setString(3, comment);
-                ps.setDate(4, (java.sql.Date) date);
+                ps.setLong(1, itemId);
+                ps.setString(2, comment);
+                LocalDate date = LocalDate.now();
+                ps.setObject(3, date);
                 return ps;
             }
         }, keyHolder);
@@ -99,7 +101,7 @@ public class CommentRepositoryImpl implements CommentRepository{
     @Transactional(readOnly = true)
     public List<Comments> getComments(long itemId) {
         // TODO Auto-generated method stub
-        final String SQL_SELECT_COMMENTS = "SELECT c.*, u.username FROM item_comments AS c, users AS u WHERE item_id = ? AND c.user_id = u.user_id";
+        final String SQL_SELECT_COMMENTS = "SELECT *FROM item_comments WHERE item_id = ?";
         return jdbcOp.query(SQL_SELECT_COMMENTS, new CommentExtractor(), itemId);
     }
 
@@ -111,10 +113,9 @@ public class CommentRepositoryImpl implements CommentRepository{
             Comments comment = new Comments();
             comment.setItemId(rs.getLong("item_id"));
             comment.setId(rs.getLong("comment_id"));
-            comment.setUserId(rs.getLong("user_id"));
-            comment.setDate(rs.getDate("comment_date"));
+            LocalDate date = (LocalDate) rs.getObject("comment_date");
+            comment.setDate(date);
             comment.setContent(rs.getString("comment_content"));
-            comment.setUsername(rs.getString("username"));
             return comment;
         }
     }
@@ -124,16 +125,17 @@ public class CommentRepositoryImpl implements CommentRepository{
     public Comments getComment(long id) {
         // TODO Auto-generated method stub
         //TODO: change the SQL to query for username as well please
-        final String SQL_SELECT_COMMENT = "SELECT c.item_id, c.comment_id, c.user_id, c.comment_date, c.comment_content, u.username FROM item_comments AS c, users AS u WHERE comment_id = ? AND c.user_id = u.user_id";
+        final String SQL_SELECT_COMMENT = "SELECT item_id, comment_id, comment_date, comment_content FROM item_comments WHERE comment_id = ?";
         return (Comments) jdbcOp.query(SQL_SELECT_COMMENT, new CommentRowMapper(), id);
     }
 
     @Override
     @Transactional
-    public void updateComment(long id, String comment, Date date) {
+    public void updateComment(long id, String comment) {
         // TODO Auto-generated method stub
         final String SQL_UPDATE_COMMENT = "UPDATE item_comments SET comment_content = ?, comment_date = ? WHERE comment_id = ?";
-        jdbcOp.update(SQL_UPDATE_COMMENT, comment, (java.sql.Date) date, id);
+        LocalDate date = LocalDate.now();
+        jdbcOp.update(SQL_UPDATE_COMMENT, comment, date, id);
         System.out.println("Comment " + id + " udpated");        
     }
 

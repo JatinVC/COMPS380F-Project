@@ -7,10 +7,8 @@ package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -201,15 +199,15 @@ public class ItemController {
         }
     }
 
-    // @PostMapping("/{itemId}/comment")
-    // public View create(CommentForm form, @PathVariable("itemId") long itemId) throws IOException {
-    //     Comments comment = new Comments();
-    //     comment.setContent(form.getCommentContent());
-    //     comment.setDate(new Date());
-    //     comment.setItemId(itemId);
-    //     comment.setUserId(getNextItemId());
-    //     //add the comment to the database.
-    //     commentRepo.createComment(comment.getUserId(), comment.getItemId(), comment.getContent(), (java.sql.Date) comment.getDate());
-    //     return new RedirectView("/", true);
-    // }
+    @PostMapping("/{itemId}/comment")
+    public View create(CommentForm form, @PathVariable("itemId") long itemId) throws IOException {
+        //get username via query, not sure how it will work overall tho
+        //are there global variables or session variables i can use here?
+        Comments comment = new Comments();
+        comment.setContent(form.getCommentContent());
+        comment.setItemId(itemId);
+        //add the comment to the database.
+        commentRepo.createComment(comment.getItemId(), comment.getContent());
+        return new RedirectView("/", true);
+    }
 }
