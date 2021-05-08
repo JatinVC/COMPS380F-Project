@@ -1,7 +1,7 @@
 package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
-import static java.lang.System.console;
+import java.security.Principal;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ouhk.comps380f.fproject.dao.UserRepository;
+import ouhk.comps380f.fproject.dao.UserRoleRepository;
 import ouhk.comps380f.fproject.model.SystemUser;
 
 @Controller
@@ -22,6 +23,7 @@ public class UserController {
 
     @Resource
     UserRepository UserRepo;
+    UserRoleRepository UserRoleRepo;
 
     @GetMapping({"/list"})
     public String list(ModelMap model, HttpServletRequest request) {
@@ -92,6 +94,7 @@ public class UserController {
 
     }
 
+
     @GetMapping("/createUser")
     public ModelAndView create(HttpServletRequest request) {
         if (!request.isUserInRole("ROLE_ADMIN")) {
@@ -114,11 +117,12 @@ public class UserController {
     public ModelAndView register() {
         return new ModelAndView("registerUser", "SystemUser", new Form());
     }
+
     @GetMapping("/userRegisterZh")
     public ModelAndView userRegisterZh() {
         return new ModelAndView("registerUserZh", "SystemUser", new Form());
     }
-    
+
     @PostMapping("/userRegister")
     public View register(Form form) throws IOException {
         String[] normalUser = {"ROLE_USER"};
@@ -128,6 +132,7 @@ public class UserController {
         UserRepo.save(user);
         return new RedirectView("/login", true);
     }
+
     @PostMapping("/userRegisterZh")
     public View registerZh(Form form) throws IOException {
         String[] normalUser = {"ROLE_USER"};
@@ -138,17 +143,11 @@ public class UserController {
         return new RedirectView("/loginZh", true);
     }
 
-    @GetMapping("/update/{username}")
-    public ModelAndView userUpdate(@PathVariable("username") String username, HttpServletRequest request) {
+    @GetMapping("/adminUpdate/{username}")
+    public ModelAndView adminUpdate(@PathVariable("username") String username, HttpServletRequest request, Principal principal) {
         Form updateForm = new Form();
         if (!request.isUserInRole("ROLE_ADMIN")) {
-            SystemUser user = UserRepo.findById(username).get();
-            String truePassword = user.getPassword();
-            updateForm.setPassword(truePassword.replaceAll("\\{noop\\}", ""));
-            updateForm.setFullName(user.getFullName());
-            updateForm.setPhoneNumber(user.getPhoneNumber());
-            updateForm.setAddress(user.getAddress());
-            return new ModelAndView("userUpdate", "SystemUser", updateForm);
+            return new ModelAndView("noAuthority");
         } else {
             SystemUser user = UserRepo.findById(username).get();
             updateForm.setUsername(user.getUsername());
@@ -162,12 +161,43 @@ public class UserController {
         }
     }
 
-    @PostMapping("/update/{username}")
-    public View userUpdate(@PathVariable("username") String username, Form form) throws IOException {
-        SystemUser olduser = UserRepo.findById(username).get();
+    @PostMapping("/adminUpdate/{username}")
+    public View adminUpdate(@PathVariable("username") String username, Form form) throws IOException {
 
-        SystemUser user = new SystemUser(olduser.getUsername(),
+        SystemUser user = new SystemUser(form.getUsername(),
                 form.getPassword(), form.getRoles(), form.getFullName(), form.getPhoneNumber(), form.getAddress()
+        );
+        UserRepo.save(user);
+
+        return new RedirectView("/user/list", true);
+    }
+
+    @GetMapping("/userUpdate")
+    public ModelAndView userUpdate(HttpServletRequest request, Principal principal) {
+        Form updateForm = new Form();
+
+        SystemUser user = UserRepo.findById(principal.getName()).get();
+        String truePassword = user.getPassword();
+        updateForm.setPassword(truePassword.replaceAll("\\{noop\\}", ""));
+        updateForm.setFullName(user.getFullName());
+        updateForm.setPhoneNumber(user.getPhoneNumber());
+        updateForm.setAddress(user.getAddress());
+        return new ModelAndView("userUpdate", "SystemUser", updateForm);
+    }
+
+    @PostMapping("/userUpdate")
+    public View userUpdate(Form form, Principal principal, HttpServletRequest request) throws IOException {
+
+        String[] roles = new String[2];
+        if (!request.isUserInRole("ROLE_ADMIN")) {
+            roles[0] = "ROLE_USER";
+        } else {
+            roles[0] = "ROLE_USER";
+            roles[1] = "ROLE_ADMIN";
+        }
+
+        SystemUser user = new SystemUser(principal.getName(),
+                form.getPassword(), roles, form.getFullName(), form.getPhoneNumber(), form.getAddress()
         );
         UserRepo.save(user);
 
@@ -181,6 +211,13 @@ public class UserController {
         }
         UserRepo.delete(UserRepo.findById(username).orElse(null));
         return new RedirectView("/user/list", true);
+    }
+
+    @GetMapping("/{username}/orderHistory")
+    public String orderHistory(@PathVariable("username") String username, ModelMap model) {
+
+        model.addAttribute("currentUser", UserRepo.findAll());
+        return "orderHistory";
     }
 
     @GetMapping("/noAuthority")

@@ -13,7 +13,9 @@
             <a href="<c:url value="/cart/Zh" />">購物車</a><br /><br />
             <h1>食物清單</h1>
             <c:forEach items="${Items}" var="items">
+                <security:authorize access="hasRole('ADMIN')"> 
                 [<a href="<c:url value="/380fproject/items/${items.id}/delete/" />">清除</a>]
+                </security:authorize>
                 <a style="font-size: 30px;" href="<c:url value="
                     /380fproject/items/${items.id}" />">${items.id}.${items.foodName}</a>
                 <a href="<c:url value="/cart/addToCart">
