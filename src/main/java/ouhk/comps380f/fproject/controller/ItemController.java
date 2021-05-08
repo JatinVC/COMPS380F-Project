@@ -118,6 +118,7 @@ public class ItemController {
         model.addAttribute("Items", itemRepo.getItems());
         return "itemInfo";
     }
+
     @GetMapping("/listZh")
     public String listZh(ModelMap model) {
         model.addAttribute("Items", itemRepo.getItems());
@@ -129,7 +130,7 @@ public class ItemController {
         itemRepo.setAvaToFalse(idForSet2);
         RedirectView rv = new RedirectView();
         rv.setContextRelative(true);
-        rv.setUrl("/items/itemInfo/{idForSet2}");
+        rv.setUrl("/items/{idForSet2}");
         return rv;
     }
 
@@ -138,7 +139,7 @@ public class ItemController {
         itemRepo.setAvaToTrue(idForSet);
         RedirectView rv = new RedirectView();
         rv.setContextRelative(true);
-        rv.setUrl("/items/itemInfo/{idForSet}");
+        rv.setUrl("/items/{idForSet}");
         return rv;
     }
 
@@ -151,7 +152,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}/edit")
-    public ModelAndView editItem(ModelMap model, @PathVariable("id") long id) throws IOException{
+    public ModelAndView editItem(ModelMap model, @PathVariable("id") long id) throws IOException {
         Map<String, Object> models = new HashMap<>();
         List<FoodItem> item = itemRepo.getItem(id);
         models.put("item", item.get(0));
@@ -160,9 +161,9 @@ public class ItemController {
     }
 
     @PostMapping("/{id}/edit")
-    public View updateItem(FoodForm form, @PathVariable("id") Long id) throws IOException{
+    public View updateItem(FoodForm form, @PathVariable("id") Long id) throws IOException {
         itemRepo.updateItem(id, form.getName(), form.getPrice(), form.getDescription(), true);
-        return new RedirectView("/items/"+id.toString());
+        return new RedirectView("/items/" + id.toString());
     }
 
     @GetMapping("/{id}/delete")
@@ -204,6 +205,12 @@ public class ItemController {
         comment.setItemId(itemId);
         //add the comment to the database.
         commentRepo.createComment(comment.getItemId(), comment.getContent());
-        return new RedirectView("/"+itemId, true);
+        return new RedirectView("/items/" + itemId, true);
+    }
+
+    @GetMapping("{itemIdFordelete}/{commentIdFordelete}/deleteComment")
+    public View deleteComment(@PathVariable int itemIdFordelete, @PathVariable int commentIdFordelete) {
+        commentRepo.deleteComment(commentIdFordelete);
+        return new RedirectView("/items/" + itemIdFordelete, true);
     }
 }
