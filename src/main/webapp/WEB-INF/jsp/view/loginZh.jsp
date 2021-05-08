@@ -23,7 +23,8 @@
             <label for="remember-me">記住密碼</label><br/><br/>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="submit" value="登入"/>
-        </form>
+        </form><br/><br/>
+            <a href="<c:url value="/user/userRegisterZh" />">註冊</a><br /><br />
     </body>
 
 </html>

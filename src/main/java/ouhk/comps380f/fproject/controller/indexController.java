@@ -18,5 +18,9 @@ public class indexController {
     public String login() {
         return "login";
     }
+    @GetMapping("/loginZh")
+    public String loginZh() {
+        return "loginZh";
+    }
     
 }

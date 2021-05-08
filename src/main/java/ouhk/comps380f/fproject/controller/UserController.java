@@ -114,7 +114,11 @@ public class UserController {
     public ModelAndView register() {
         return new ModelAndView("registerUser", "SystemUser", new Form());
     }
-
+    @GetMapping("/userRegisterZh")
+    public ModelAndView userRegisterZh() {
+        return new ModelAndView("registerUserZh", "SystemUser", new Form());
+    }
+    
     @PostMapping("/userRegister")
     public View register(Form form) throws IOException {
         String[] normalUser = {"ROLE_USER"};
@@ -123,6 +127,15 @@ public class UserController {
         );
         UserRepo.save(user);
         return new RedirectView("/login", true);
+    }
+    @PostMapping("/userRegisterZh")
+    public View registerZh(Form form) throws IOException {
+        String[] normalUser = {"ROLE_USER"};
+        SystemUser user = new SystemUser(form.getUsername(),
+                form.getPassword(), normalUser, form.getFullName(), form.getPhoneNumber(), form.getAddress()
+        );
+        UserRepo.save(user);
+        return new RedirectView("/loginZh", true);
     }
 
     @GetMapping("/update/{username}")

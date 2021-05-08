@@ -33,7 +33,7 @@ public class cartController {
     public String viewCart() {
         return "viewCart";
     }
-    @RequestMapping("/CartZh")
+    @RequestMapping("/Zh")
     public String viewCartZh() {
         return "viewCartZh";
     }

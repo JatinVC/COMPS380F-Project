@@ -4,6 +4,8 @@
         <title>Login</title>
     </head>
     <body>
+        <a href="/380fproject/login" >English</a>
+        <a href="/380fproject/loginZh" >繁體中文</a>
         <c:if test="${param.error != null}">
             <p>Login failed.</p>
         </c:if>
@@ -21,7 +23,7 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="submit" value="Log In"/>
         </form>
-            <<br/><br/>
+            <br/><br/>
             <a href="<c:url value="/user/userRegister" />">Register as a User</a><br /><br />
     </body>
 </html>
