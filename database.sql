@@ -28,12 +28,12 @@ CREATE TABLE user_roles (
 	PRIMARY KEY (user_role_id),
 	FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-INSERT INTO users(username,password)VALUES ('keith', '{noop}keithpw', 'Keith teacher', '+852 12345678', 'somewhere in hong kong');
+INSERT INTO users(username,password)VALUES ('keith', '{noop}keithpw');
 INSERT INTO user_roles(user_id,username, role) VALUES (1,'keith', 'ROLE_USER');
 INSERT INTO user_roles(user_id,username, role) VALUES (1,'keith', 'ROLE_ADMIN');
-INSERT INTO users (username,password)VALUES ('vanessa', '{noop}vanessapw', 'Vanessa teacher', '+852 12345678', 'somewhere in hong kong');
+INSERT INTO users (username,password)VALUES ('vanessa', '{noop}vanessapw');
 INSERT INTO user_roles(user_id,username, role) VALUES (2,'vanessa', 'ROLE_ADMIN');
-INSERT INTO users (username,password)VALUES ('kevin', '{noop}kevinpw', 'Kevin teacher', '+852 12345678', 'somewhere in hong kong');
+INSERT INTO users (username,password)VALUES ('kevin', '{noop}kevinpw');
 INSERT INTO user_roles(user_id,username, role) VALUES (3,'kevin', 'ROLE_USER');
 /* 
 	items

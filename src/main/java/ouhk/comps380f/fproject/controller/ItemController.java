@@ -106,7 +106,7 @@ public class ItemController {
             //create items here
             pictureRepo.createPicture(filePart.getOriginalFilename(), filePart.getContentType(), itemId, filePart.getInputStream());
         }
-        return new RedirectView("/", true);
+        return new RedirectView("/items/list", true);
     }
 
     private synchronized long getNextItemId() {
@@ -184,7 +184,6 @@ public class ItemController {
     private static class CommentForm implements Serializable {
 
         private String commentContent;
-        private Date date;
 
         //getters and settings
         public String getCommentContent() {
@@ -193,14 +192,6 @@ public class ItemController {
 
         public void setCommentContent(String commentContent) {
             this.commentContent = commentContent;
-        }
-
-        public Date getDate() {
-            return this.date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
         }
     }
 
@@ -213,6 +204,6 @@ public class ItemController {
         comment.setItemId(itemId);
         //add the comment to the database.
         commentRepo.createComment(comment.getItemId(), comment.getContent());
-        return new RedirectView("/", true);
+        return new RedirectView("/"+itemId, true);
     }
 }

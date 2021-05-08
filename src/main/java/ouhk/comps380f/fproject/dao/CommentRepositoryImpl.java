@@ -59,12 +59,10 @@ public class CommentRepositoryImpl implements CommentRepository{
                 if(comment == null){
                     comment = new Comments();
                     comment.setId(id);
-                    comment.setUserId(rs.getLong("user_id"));
                     comment.setItemId(rs.getLong("item_id"));
                     comment.setContent(rs.getString("comment_content"));
-                    LocalDate date = (LocalDate) rs.getObject("comment_date");
+                    LocalDate date = LocalDate.parse(rs.getString("comment_date"));
                     comment.setDate(date);
-                    comment.setUsername(rs.getString("username"));
                     map.put(id, comment);
                 }
             }
@@ -86,7 +84,7 @@ public class CommentRepositoryImpl implements CommentRepository{
                 ps.setLong(1, itemId);
                 ps.setString(2, comment);
                 LocalDate date = LocalDate.now();
-                ps.setObject(3, date);
+                ps.setString(3, date.toString());
                 return ps;
             }
         }, keyHolder);
@@ -113,7 +111,7 @@ public class CommentRepositoryImpl implements CommentRepository{
             Comments comment = new Comments();
             comment.setItemId(rs.getLong("item_id"));
             comment.setId(rs.getLong("comment_id"));
-            LocalDate date = (LocalDate) rs.getObject("comment_date");
+            LocalDate date = LocalDate.parse(rs.getString("comment_date"));
             comment.setDate(date);
             comment.setContent(rs.getString("comment_content"));
             return comment;
@@ -124,7 +122,6 @@ public class CommentRepositoryImpl implements CommentRepository{
     @Transactional
     public Comments getComment(long id) {
         // TODO Auto-generated method stub
-        //TODO: change the SQL to query for username as well please
         final String SQL_SELECT_COMMENT = "SELECT item_id, comment_id, comment_date, comment_content FROM item_comments WHERE comment_id = ?";
         return (Comments) jdbcOp.query(SQL_SELECT_COMMENT, new CommentRowMapper(), id);
     }
@@ -135,7 +132,7 @@ public class CommentRepositoryImpl implements CommentRepository{
         // TODO Auto-generated method stub
         final String SQL_UPDATE_COMMENT = "UPDATE item_comments SET comment_content = ?, comment_date = ? WHERE comment_id = ?";
         LocalDate date = LocalDate.now();
-        jdbcOp.update(SQL_UPDATE_COMMENT, comment, date, id);
+        jdbcOp.update(SQL_UPDATE_COMMENT, comment, date.toString(), id);
         System.out.println("Comment " + id + " udpated");        
     }
 
