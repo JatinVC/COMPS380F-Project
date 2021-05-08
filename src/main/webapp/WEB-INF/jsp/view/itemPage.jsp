@@ -1,10 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-    <!DOCTYPE html>
-    <html>
+<!DOCTYPE html>
+<html>
 
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+              integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Itempage</title>
     </head>
@@ -27,15 +27,20 @@
                     <img src="data:${pic.getMimeContentType()};base64,${pic.getStringContents()}" width="100px" height="100px" alt="alt" />
                 </c:forEach>
                 <p>Price:${items.price}HKD</p>
-            <p>availability of the item:${items.quantity}</p>
-                  [<a href="<c:url value="/items/setAvaToTrue/${items.id}"/>">Set it to Yes</a>]
-                  <a href="<c:url value="/items/setAvaToFalse/${items.id}"/>">Set it to No</a>]
-                  
-                <p>Comments:</p>
+                <p>availability of the item:${items.quantity}</p>
+                <security:authorize access="hasRole('ADMIN')"> 
+                    [<a href="<c:url value="/items/setAvaToTrue/${items.id}"/>">Set it to Yes</a>]
+                    <a href="<c:url value="/items/setAvaToFalse/${items.id}"/>">Set it to No</a>]
+                </security:authorize>
+                <p>Comments:</p>   
+                [ <a href="<c:url value="/items/${items.id}/comment"/>">Create a comment</a>]
                 <ul style="list-style-type: none;">
                     <c:forEach items="${comments}" var="comment">
                         <h4>${comment.getUsername()}</h4>
-                        <li>${comment.getDate()}: ${comment.getContent()}</li>
+                        <li>${comment.getDate()}: ${comment.getContent()}  
+                            <security:authorize access="hasRole('ADMIN')"> 
+                                [<a href="<c:url value="/items/${items.id}/${comment.getId()}/deleteComment" />">Delete</a>]
+                            </security:authorize></li>
                         <li></li>
                         <hr>
                     </c:forEach>
@@ -43,4 +48,4 @@
             </c:forEach>
         </div>
     </body>
-    </html>
+</html>
