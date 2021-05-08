@@ -93,10 +93,14 @@ CREATE TABLE item_picture(
 	order system
 	this is filled in once an order is complete
 */
+DROP TABLE orders;
 CREATE TABLE orders(
 	order_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+        order_number INTEGER NOT NULL,
 	user_id INTEGER NOT NULL,
-	order_total INTEGER NOT NULL DEFAULT 0,
+        item_id INTEGER NOT NULL,
+        item_name VARCHAR(50) NOT NULL,
+        item_quantity INTEGER NOT NULL,
 	order_date DATE,
 	FOREIGN KEY (user_id) REFERENCES users(user_id),
 	PRIMARY KEY(order_id)
@@ -106,13 +110,15 @@ CREATE TABLE orders(
 	cart items
 	all items in the cart after pressing 'order' button on website
 */
-
+DROP TABLE cart;
 CREATE TABLE cart(
 	cart_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+        user_id INTEGER NOT NULL,
 	order_id INTEGER NOT NULL,
 	item_id INTEGER NOT NULL,
 	cart_quantity INTEGER NOT NULL DEFAULT 1,
 	FOREIGN KEY (order_id) REFERENCES orders(order_id),
 	FOREIGN KEY (item_id) REFERENCES items(item_id),
+        FOREIGN KEY (user_id) REFERENCES users(user_id),
 	PRIMARY KEY (cart_id)
 );

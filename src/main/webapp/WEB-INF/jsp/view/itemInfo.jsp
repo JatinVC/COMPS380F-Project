@@ -17,12 +17,12 @@
                     [<a href="<c:url value="/items/${items.id}/delete/" />">Delete</a>]
                 </security:authorize>
                 <a style="font-size: 30px;" href="<c:url value="/items/${items.id}" />">${items.id}.${items.foodName}</a>
-                <a href="<c:url value="/items/list/addToCart">
+                <a href="<c:url value="/cart/addToCart">
 
                    <c:param name="item" value="${items.foodName}" />
                     </c:url>">Add to cart</a>
                 <br />
-
+                    
             </c:forEach>
         </div>
     </body>

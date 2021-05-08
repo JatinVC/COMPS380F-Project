@@ -6,9 +6,11 @@
 package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,13 +23,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import ouhk.comps380f.fproject.dao.CartRepository;
+import ouhk.comps380f.fproject.model.Cart;
+
 
 
 @Controller
 @RequestMapping("/cart")
 public class cartController {
-     
-    private final Map<Integer, String> cart = new Hashtable<>();
+    
+    @Resource
+    CartRepository cartRepo;
+    
+    Map<Integer, String> cart = new Hashtable<>();
     
     @RequestMapping
     public String viewCart() {
@@ -55,12 +63,22 @@ public class cartController {
         
         return "viewCart";
     }
-
+    
     @RequestMapping("/emptyCart")
     public String emptyCart(WebRequest request,SessionStatus status){
         status.setComplete();
         request.removeAttribute("cart",WebRequest.SCOPE_SESSION);
         return "viewCart";
     }
-
+    @RequestMapping("/checkout")
+    public String checkout(WebRequest request,SessionStatus status){
+        java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        for (Integer i : cart.keySet()) {
+            Cart cartinfo = new Cart(i+1,i+1,i+1,cart.get(i),i,date);
+            cartRepo.save(cartinfo);
+        }
+        status.setComplete();
+        request.removeAttribute("cart",WebRequest.SCOPE_SESSION);
+        return "viewCart";
+    }
 }
