@@ -120,6 +120,11 @@ public class ItemController {
         model.addAttribute("Items", itemRepo.getItems());
         return "itemInfo";
     }
+    @GetMapping("/listZh")
+    public String listZh(ModelMap model) {
+        model.addAttribute("Items", itemRepo.getItems());
+        return "itemInfoZh";
+    }
 
     @GetMapping("/setAvaToFalse/{idForSet2}")
     public View setAvaToFalse(@PathVariable("idForSet2") int idForSet2) {

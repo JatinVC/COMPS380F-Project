@@ -4,7 +4,7 @@
         <title>View Cart</title>
     </head>
     <body>
-        <a href="<c:url value="/cart/emptyCart" />">Empty Cart</a>
+        <a href="<c:url value="/items/list/viewCart/emptyCart" />">Empty Cart</a>
         <h1>View Cart</h1>
         <a href="<c:url value="/items/list"/>">Item List</a><br /><br />
         <c:choose>
