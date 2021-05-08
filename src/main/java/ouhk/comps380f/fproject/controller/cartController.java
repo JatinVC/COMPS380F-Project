@@ -29,9 +29,13 @@ public class cartController {
      
     private final Map<Integer, String> cart = new Hashtable<>();
     
-    @RequestMapping("viewCart")
+    @RequestMapping
     public String viewCart() {
         return "viewCart";
+    }
+    @RequestMapping("/CartZh")
+    public String viewCartZh() {
+        return "viewCartZh";
     }
     
     @GetMapping("addToCart")
@@ -52,7 +56,7 @@ public class cartController {
         return "viewCart";
     }
 
-    @RequestMapping("viewCart/emptyCart")
+    @RequestMapping("/emptyCart")
     public String emptyCart(WebRequest request,SessionStatus status){
         status.setComplete();
         request.removeAttribute("cart",WebRequest.SCOPE_SESSION);
