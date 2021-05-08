@@ -15,13 +15,13 @@ import ouhk.comps380f.fproject.model.Comments;
  * @author Jatin
  */
 public interface CommentRepository {
-    public long createComment(Long userId, long itemId, String comment, Date date);
+    public long createComment(long itemId, String comment);
 
     public List<Comments> getComments(long itemId);
 
     public Comments getComment(long id);
 
-    public void updateComment(long id, String comment, Date date);
+    public void updateComment(long id, String comment);
 
     public void deleteComment(long id);
 }

@@ -13,10 +13,11 @@
             <a href="<c:url value="/cart" />">ViewCart</a><br /><br />
             <h1>Item List</h1><br /><br />
             <c:forEach items="${Items}" var="items">
-                [<a href="<c:url value="/380fproject/items/${items.id}/delete/" />">Delete</a>]
-                <a style="font-size: 30px;" href="<c:url value="
-                       /380fproject/items/${items.id}" />">${items.id}.${items.foodName}</a>
-                <a href="<c:url value="/cart/addToCart">
+                <security:authorize access="hasRole('ADMIN')"> 
+                    [<a href="<c:url value="/items/${items.id}/delete/" />">Delete</a>]
+                </security:authorize>
+                <a style="font-size: 30px;" href="<c:url value="/items/${items.id}" />">${items.id}.${items.foodName}</a>
+                <a href="<c:url value="/items/list/addToCart">
 
                    <c:param name="item" value="${items.foodName}" />
                     </c:url>">Add to cart</a>

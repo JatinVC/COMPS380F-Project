@@ -9,7 +9,7 @@ CREATE TABLE users (
 	password VARCHAR(50) NOT NULL,
 	fullname VARCHAR(50) ,
 	phonenumber VARCHAR(50) ,
-	address VARCHAR(50) ,
+	address VARCHAR(50),
 	PRIMARY KEY (user_id)
 );
 
@@ -66,7 +66,6 @@ INSERT INTO items(item_name, item_price,item_description,item_availability) VALU
 
 CREATE TABLE item_comments(
 	comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-	user_id INTEGER NOT NULL,
 	item_id INTEGER NOT NULL,
 	comment_content VARCHAR(250) NOT NULL,
 	comment_date DATE,

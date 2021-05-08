@@ -7,10 +7,8 @@ package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -108,7 +106,7 @@ public class ItemController {
             //create items here
             pictureRepo.createPicture(filePart.getOriginalFilename(), filePart.getContentType(), itemId, filePart.getInputStream());
         }
-        return new RedirectView("/", true);
+        return new RedirectView("/items/list", true);
     }
 
     private synchronized long getNextItemId() {
@@ -186,7 +184,6 @@ public class ItemController {
     private static class CommentForm implements Serializable {
 
         private String commentContent;
-        private Date date;
 
         //getters and settings
         public String getCommentContent() {
@@ -196,25 +193,17 @@ public class ItemController {
         public void setCommentContent(String commentContent) {
             this.commentContent = commentContent;
         }
-
-        public Date getDate() {
-            return this.date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
-        }
     }
 
-    // @PostMapping("/{itemId}/comment")
-    // public View create(CommentForm form, @PathVariable("itemId") long itemId) throws IOException {
-    //     Comments comment = new Comments();
-    //     comment.setContent(form.getCommentContent());
-    //     comment.setDate(new Date());
-    //     comment.setItemId(itemId);
-    //     comment.setUserId(getNextItemId());
-    //     //add the comment to the database.
-    //     commentRepo.createComment(comment.getUserId(), comment.getItemId(), comment.getContent(), (java.sql.Date) comment.getDate());
-    //     return new RedirectView("/", true);
-    // }
+    @PostMapping("/{itemId}/comment")
+    public View create(CommentForm form, @PathVariable("itemId") long itemId) throws IOException {
+        //get username via query, not sure how it will work overall tho
+        //are there global variables or session variables i can use here?
+        Comments comment = new Comments();
+        comment.setContent(form.getCommentContent());
+        comment.setItemId(itemId);
+        //add the comment to the database.
+        commentRepo.createComment(comment.getItemId(), comment.getContent());
+        return new RedirectView("/"+itemId, true);
+    }
 }

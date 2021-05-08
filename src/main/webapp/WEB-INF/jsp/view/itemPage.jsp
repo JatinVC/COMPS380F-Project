@@ -27,12 +27,12 @@
                     <img src="data:${pic.getMimeContentType()};base64,${pic.getStringContents()}" width="100px" height="100px" alt="alt" />
                 </c:forEach>
                 <p>Price:${items.price}HKD</p>
-                <p>availability of the item:${items.quantity}</p>
+            <p>availability of the item:${items.quantity}</p>
                   [<a href="<c:url value="/items/setAvaToTrue/${items.id}"/>">Set it to Yes</a>]
                   <a href="<c:url value="/items/setAvaToFalse/${items.id}"/>">Set it to No</a>]
                   
                 <p>Comments:</p>
-                <ul>
+                <ul style="list-style-type: none;">
                     <c:forEach items="${comments}" var="comment">
                         <h4>${comment.getUsername()}</h4>
                         <li>${comment.getDate()}: ${comment.getContent()}</li>
