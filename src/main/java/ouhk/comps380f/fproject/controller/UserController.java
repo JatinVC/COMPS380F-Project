@@ -199,7 +199,17 @@ public class UserController {
         updateForm.setAddress(user.getAddress());
         return new ModelAndView("userUpdate", "SystemUser", updateForm);
     }
-
+    @GetMapping("/userUpdateZh")
+    public ModelAndView userUpdateZh(HttpServletRequest request, Principal principal) {
+        Form updateForm = new Form();
+        SystemUser user = UserRepo.findById(principal.getName()).get();
+        String truePassword = user.getPassword();
+        updateForm.setPassword(truePassword.replaceAll("\\{noop\\}", ""));
+        updateForm.setFullName(user.getFullName());
+        updateForm.setPhoneNumber(user.getPhoneNumber());
+        updateForm.setAddress(user.getAddress());
+        return new ModelAndView("userUpdateZh", "SystemUser", updateForm);
+    }
     @PostMapping("/userUpdate")
     public View userUpdate(Form form, Principal principal, HttpServletRequest request) throws IOException {
 
@@ -219,6 +229,25 @@ public class UserController {
         UserRepo.save(user);
 
         return new RedirectView("/user/list", true);
+    }
+    @PostMapping("/userUpdateZh")
+    public View userUpdateZh(Form form, Principal principal, HttpServletRequest request) throws IOException {
+        String[] roles;
+        if (!request.isUserInRole("ROLE_ADMIN")) {
+            roles = new String[1];
+            roles[0] = "ROLE_USER";
+        } else {
+            roles = new String[2];
+            roles[0] = "ROLE_USER";
+            roles[1] = "ROLE_ADMIN";
+        }
+
+        SystemUser user = new SystemUser(principal.getName(),
+                form.getPassword(), roles, form.getFullName(), form.getPhoneNumber(), form.getAddress()
+        );
+        UserRepo.save(user);
+
+        return new RedirectView("/user/listZh", true);
     }
 
     @GetMapping("/delete/{username}")

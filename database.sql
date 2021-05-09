@@ -65,15 +65,13 @@ INSERT INTO items(item_name, item_price,item_description,item_availability) VALU
 
 
 CREATE TABLE item_comments(
-	comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-	item_id INTEGER NOT NULL,
-	comment_content VARCHAR(250) NOT NULL,
-	comment_date DATE,
-	FOREIGN KEY (user_id) REFERENCES users(user_id),
-	FOREIGN KEY (item_id) REFERENCES items(item_id),
-	PRIMARY KEY (comment_id)
+    comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    item_id INTEGER NOT NULL,
+    comment_content VARCHAR(250) NOT NULL,
+    comment_date VARCHAR(250) NOT NULL,
+    FOREIGN KEY (item_id) REFERENCES items(item_id),
+    PRIMARY KEY (comment_id)
 );
-
 /* 
 	item photos
 	picture for an item
