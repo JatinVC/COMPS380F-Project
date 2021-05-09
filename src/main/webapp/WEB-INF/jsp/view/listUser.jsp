@@ -6,8 +6,9 @@
             <input type="submit" value="Log out" />
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-        <br /><br />
-        <a href="<c:url value="/ticket" />">Return to list tickets</a>
+        <br />
+        <a href="<c:url value="/items/list" />">Go Back to the Main Page</a><br /><br />
+        <br />
         <h2>Users</h2>
         <a href="<c:url value="/user/createUser" />">Create a User</a><br /><br />
         <c:choose>
@@ -29,7 +30,7 @@
                                 </c:forEach>
                             </td>
                             <td>
-                                [<a href="<c:url value="/user/update/${user.username}" />">Update</a>]
+                                [<a href="<c:url value="/user/adminUpdate/${user.username}" />">Update</a>]
                             </td>
                             <td>
                                 [<a href="<c:url value="/user/delete/${user.username}" />">Delete</a>]

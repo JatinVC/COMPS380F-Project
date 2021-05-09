@@ -11,6 +11,13 @@
         <a href="/380fproject/items/list" >English</a>
         <a href="/380fproject/items/listZh" >繁體中文</a><br /><br />
             <a href="<c:url value="/cart" />">ViewCart</a><br /><br />
+            <security:authorize access="hasAnyRole('USER','ADMIN')"> 
+                <a href="<c:url value="/user/userUpdate" />">Update Your Personal Information</a>
+              </security:authorize>
+                <br/><br/>
+                <security:authorize access="hasRole('ADMIN')"> 
+                [<a href="<c:url value="/user/list" />">User Management</a>]
+              </security:authorize>   
             <h1>Item List</h1><br /><br />
             <c:forEach items="${Items}" var="items">
                 <security:authorize access="hasRole('ADMIN')"> 
