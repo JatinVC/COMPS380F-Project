@@ -60,6 +60,23 @@ public class cartController {
 
         return "viewCart";
     }
+    @GetMapping("Zh/addToCart")
+    public String addToCartZh(@RequestParam String item, HttpServletRequest request) throws IOException {
+
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("cart") == null) {
+            session.setAttribute("cart", new Hashtable<>());
+        }
+
+        Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("cart");;
+        if (!cart.containsKey(item)) {
+            cart.put(item, 0);
+        }
+        cart.put(item, cart.get(item) + 1);
+
+        return "viewCartZh";
+    }
 
     @RequestMapping("/emptyCart")
     public String emptyCart(WebRequest request, SessionStatus status) {
