@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ouhk.comps380f.fproject.dao.UserRepository;
 import ouhk.comps380f.fproject.dao.UserRoleRepository;
 import ouhk.comps380f.fproject.model.SystemUser;
+import ouhk.comps380f.fproject.model.UserRole;
 
 @Controller
 @RequestMapping("/user")
@@ -23,7 +24,6 @@ public class UserController {
 
     @Resource
     UserRepository UserRepo;
-    UserRoleRepository UserRoleRepo;
 
     @GetMapping({"/list"})
     public String list(ModelMap model, HttpServletRequest request) {
@@ -94,7 +94,6 @@ public class UserController {
 
     }
 
-
     @GetMapping("/createUser")
     public ModelAndView create(HttpServletRequest request) {
         if (!request.isUserInRole("ROLE_ADMIN")) {
@@ -152,10 +151,26 @@ public class UserController {
             SystemUser user = UserRepo.findById(username).get();
             updateForm.setUsername(user.getUsername());
             String truePassword = user.getPassword();
+            String[] roles;
+            UserRole role1 = user.getRoles().get(0);
+            UserRole role2;
+            if (user.getRoles().size() > 1) {
+                role2 = user.getRoles().get(1);
+            } else {
+                role2 = null;
+            }
+            
+            if (role1 != null && role2 == null || role1 == null && role2 != null) {
+                roles = new String[]{role1.getRole()};
+            } else {
+                roles = new String[]{role1.getRole(), role2.getRole()};
+            }
+            
             updateForm.setPassword(truePassword.replaceAll("\\{noop\\}", ""));
             updateForm.setFullName(user.getFullName());
             updateForm.setPhoneNumber(user.getPhoneNumber());
             updateForm.setAddress(user.getAddress());
+            updateForm.setRoles(roles);
 
             return new ModelAndView("adminUpdate", "SystemUser", updateForm);
         }
@@ -188,10 +203,12 @@ public class UserController {
     @PostMapping("/userUpdate")
     public View userUpdate(Form form, Principal principal, HttpServletRequest request) throws IOException {
 
-        String[] roles = new String[2];
+        String[] roles;
         if (!request.isUserInRole("ROLE_ADMIN")) {
+            roles = new String[1];
             roles[0] = "ROLE_USER";
         } else {
+            roles = new String[2];
             roles[0] = "ROLE_USER";
             roles[1] = "ROLE_ADMIN";
         }
