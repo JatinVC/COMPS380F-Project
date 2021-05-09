@@ -20,7 +20,8 @@ The SQL file will insert 3 user:
 Additional Features:
    We have 4 people in the group, so we did 4 features:
    1.Ordering history page of a registered user
-   2.Multiple languages (e.g., English, Traditional Chinese)
+      - The 
+   2.Multiple languages (English, Traditional Chinese)
    3.Batch uploading of photos
    4.Storing photos to the Apache Derby database
       - for file uploading, use short filenames otherwise the database won't be able to store the name.
