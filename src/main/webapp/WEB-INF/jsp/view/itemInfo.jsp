@@ -25,9 +25,7 @@
             <security:authorize access="hasRole('ADMIN')"> 
                 [<a href="<c:url value="/user/list" />">User Management</a>]
             </security:authorize>
-            <security:authorize access="hasAnyRole('USER','ADMIN')"> 
-                [<a href="<c:url value="/items/create">">Create Food Item</a>]  
-            </security:authorize> 
+            [<a href="<c:url value="/items/create" />">Create FoodItem</a>] 
             <h1>Item List</h1><br /><br />
             <c:forEach items="${Items}" var="items">
                 <security:authorize access="hasRole('ADMIN')"> 
@@ -35,7 +33,6 @@
                 </security:authorize>
                 <a style="font-size: 30px;" href="<c:url value="/items/${items.id}" />">${items.id}.${items.foodName}</a>
                 <a href="<c:url value="/cart/addToCart">
-
                    <c:param name="item" value="${items.foodName}" />
                     </c:url>">Add to cart</a>
                 <br />
