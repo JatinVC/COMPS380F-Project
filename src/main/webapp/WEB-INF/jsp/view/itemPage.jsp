@@ -29,11 +29,14 @@
                 <p>Price:${items.price}HKD</p>
                 <p>availability of the item:${items.quantity}</p>
                 <security:authorize access="hasRole('ADMIN')"> 
+                    [<a href="<c:url value="/items/${items.id}/edit" />">Edit item page</a>]
                     [<a href="<c:url value="/items/setAvaToTrue/${items.id}"/>">Set it to Yes</a>]
-                    <a href="<c:url value="/items/setAvaToFalse/${items.id}"/>">Set it to No</a>]
+                    [<a href="<c:url value="/items/setAvaToFalse/${items.id}"/>">Set it to No</a>]
                 </security:authorize>
                 <p>Comments:</p>   
-                [ <a href="<c:url value="/items/${items.id}/comment"/>">Create a comment</a>]
+                <security:authorize access="hasAnyRole('USER','ADMIN')"> 
+                [<a href="<c:url value="/items/${items.id}/comment"/>">Create a comment</a>]
+                </security:authorize>
                 <ul style="list-style-type: none;">
                     <c:forEach items="${comments}" var="comment">
                         <h4>${comment.getUsername()}</h4>

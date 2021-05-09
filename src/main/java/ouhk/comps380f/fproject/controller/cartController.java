@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.context.request.WebRequest;
+import ouhk.comps380f.fproject.dao.ItemRepository;
 import ouhk.comps380f.fproject.model.Orders;
 import ouhk.comps380f.fproject.dao.OrdersRepository;
 
@@ -30,6 +31,9 @@ public class cartController {
 
     @Resource
     OrdersRepository orderRepo;
+
+    @Resource
+    ItemRepository itemRepo;
 
     Map<Integer, String> cart = new Hashtable<>();
 
@@ -47,11 +51,20 @@ public class cartController {
     public String addToCart(@RequestParam String item, HttpServletRequest request) throws IOException {
 
         HttpSession session = request.getSession();
+        boolean ava = false;
+        for (int i = 0; i < itemRepo.getItems().size(); i++) {
+            if (itemRepo.getItems().get(i).getFoodName().equals(item)) {
+                ava = itemRepo.getItems().get(i).getQuantity();
+            }
+        }
+        if (ava == false) {
+            return "noAvailable";
+        }
 
         if (session.getAttribute("cart") == null) {
             session.setAttribute("cart", new Hashtable<>());
         }
-
+        
         Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("cart");;
         if (!cart.containsKey(item)) {
             cart.put(item, 0);
@@ -60,11 +73,20 @@ public class cartController {
 
         return "viewCart";
     }
+
     @GetMapping("Zh/addToCart")
     public String addToCartZh(@RequestParam String item, HttpServletRequest request) throws IOException {
 
         HttpSession session = request.getSession();
-
+        boolean ava = false;
+        for (int i = 0; i < itemRepo.getItems().size(); i++) {
+            if (itemRepo.getItems().get(i).getFoodName() == item) {
+                ava = itemRepo.getItems().get(i).getQuantity();
+            }
+        }
+        if (ava == false) {
+            return "noAvailable";
+        }
         if (session.getAttribute("cart") == null) {
             session.setAttribute("cart", new Hashtable<>());
         }
@@ -84,45 +106,45 @@ public class cartController {
         request.removeAttribute("cart", WebRequest.SCOPE_SESSION);
         return "viewCart";
     }
+
     @RequestMapping("Zh/emptyCart")
-    public String emptyCartZh (WebRequest request, SessionStatus status) {
+    public String emptyCartZh(WebRequest request, SessionStatus status) {
         status.setComplete();
         request.removeAttribute("cart", WebRequest.SCOPE_SESSION);
         return "viewCartZh";
     }
 
     @RequestMapping("/checkout")
-    public String checkout(WebRequest request, SessionStatus status,HttpServletRequest request1,Principal principal) throws InterruptedException {
-        
+    public String checkout(WebRequest request, SessionStatus status, HttpServletRequest request1, Principal principal) throws InterruptedException {
+
         java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
         HttpSession session = request1.getSession();
         Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("cart");;
         try {
-            Orders cartinfo = new Orders(principal.getName(),cart.toString(),date);
+            Orders cartinfo = new Orders(principal.getName(), cart.toString(), date);
             orderRepo.save(cartinfo);
-        }
-        catch(NullPointerException npe){
+        } catch (NullPointerException npe) {
             return "viewCart";
         }
-        
+
         status.setComplete();
         request.removeAttribute("cart", WebRequest.SCOPE_SESSION);
         return "viewCart";
     }
+
     @RequestMapping("Zh/checkout")
-    public String checkoutZh(WebRequest request, SessionStatus status,HttpServletRequest request1,Principal principal) {
-        
+    public String checkoutZh(WebRequest request, SessionStatus status, HttpServletRequest request1, Principal principal) {
+
         java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
         HttpSession session = request1.getSession();
         Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("cart");;
         try {
-            Orders cartinfo = new Orders(principal.getName(),cart.toString(),date);
+            Orders cartinfo = new Orders(principal.getName(), cart.toString(), date);
             orderRepo.save(cartinfo);
+        } catch (NullPointerException npe) {
+            return "viewCartZh";
         }
-        catch(NullPointerException npe){
-            return "viewCart";
-        }
-        
+
         status.setComplete();
         request.removeAttribute("cart", WebRequest.SCOPE_SESSION);
         return "viewCartZh";

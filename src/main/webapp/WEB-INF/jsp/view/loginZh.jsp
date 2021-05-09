@@ -19,8 +19,6 @@
             <input type="text" id="username" name="username" /><br/><br/>
             <label for="password">密碼:</label><br/>
             <input type="password" id="password" name="password" /><br/><br/>
-            <input type="checkbox" id="remember-me" name="remember-me" />
-            <label for="remember-me">記住密碼</label><br/><br/>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="submit" value="登入"/>
         </form><br/><br/>

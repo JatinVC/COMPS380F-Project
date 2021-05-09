@@ -19,27 +19,30 @@
             <c:forEach items="${Items}" var="items">
 
                 <h1>${items.foodName}</h1>
-                <p>Description:</p>
+                <p>食物介紹</p>
                 <P> ${items.description}</p>
-                <p>Photos:</p>
+                <p>圖片:</p>
                 <c:forEach items="${pictures}" var="pic">
                     ${pic.setStringContents()}
                     <img src="data:${pic.getMimeContentType()};base64,${pic.getStringContents()}" width="100px" height="100px" alt="alt" />
                 </c:forEach>
-                <p>Price:${items.price}HKD</p>
-                <p>availability of the item:${items.quantity}</p>
+                <p>價錢:${items.price}HKD</p>
+                <p>供應:${items.quantity}</p>
                       <security:authorize access="hasRole('ADMIN')"> 
-                  [<a href="<c:url value="/items/setAvaToTrue/${items.id}"/>">Set it to Yes</a>]
-                  <a href="<c:url value="/items/setAvaToFalse/${items.id}"/>">Set it to No</a>]
+                  [<a href="<c:url value="/items/${items.id}/editZh" />">更改</a>]        
+                  [<a href="<c:url value="/items/Zh/setAvaToTrue/${items.id}"/>">可供應</a>]
+                  [<a href="<c:url value="/items/Zh/setAvaToFalse/${items.id}"/>">不可供應</a>]
                      </security:authorize>
-                <p>Comments:</p>
-                 [ <a href="<c:url value="/items/${items.id}/comment"/>">Create a comment</a>]
+                <p>留言</p>
+                <security:authorize access="hasAnyRole('USER','ADMIN')"> 
+                [<a href="<c:url value="/items/${items.id}/commentZh"/>">留言</a>]
+                </security:authorize>
                 <ul>
                     <c:forEach items="${comments}" var="comment">
                         <h4>${comment.getUsername()}</h4>
                         <li>${comment.getDate()}: ${comment.getContent()}</li>
                            <security:authorize access="hasRole('ADMIN')"> 
-                                [<a href="<c:url value="/items/${items.id}/${comment.getId()}/deleteComment" />">Delete</a>]
+                                [<a href="<c:url value="/items/${items.id}/${comment.getId()}/deleteComment" />">刪除</a>]
                             </security:authorize></li>
                         <li></li>
                         <hr>

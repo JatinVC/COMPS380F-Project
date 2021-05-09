@@ -12,7 +12,7 @@ public class indexController {
     
    @GetMapping
     public String index() {
-        return "redirect:/items";
+        return "redirect:/items/list";
     }
     @GetMapping("/login")
     public String login() {

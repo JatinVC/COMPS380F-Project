@@ -33,6 +33,14 @@ public class UserController {
         model.addAttribute("systemUsers", UserRepo.findAll());
         return "listUser";
     }
+    @GetMapping({"/listZh"})
+    public String listZh(ModelMap model, HttpServletRequest request) {
+        if (!request.isUserInRole("ROLE_ADMIN")) {
+            return "noAuthority";
+        }
+        model.addAttribute("systemUsers", UserRepo.findAll());
+        return "listUserZh";
+    }
 
     public static class Form {
 

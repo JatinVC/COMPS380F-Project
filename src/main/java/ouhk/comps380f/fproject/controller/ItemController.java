@@ -52,6 +52,10 @@ public class ItemController {
     public ModelAndView create() {
         return new ModelAndView("addItem", "itemForm", new FoodForm());
     }
+    @GetMapping("/createZh")
+    public ModelAndView createZh() {
+        return new ModelAndView("addItemZh", "itemForm", new FoodForm());
+    }
 
     public static class FoodForm implements Serializable {
 
@@ -133,9 +137,25 @@ public class ItemController {
         rv.setUrl("/items/{idForSet2}");
         return rv;
     }
+        @GetMapping("Zh/setAvaToFalse/{idForSet2}")
+    public View setAvaToFalseZh(@PathVariable("idForSet2") int idForSet2) {
+        itemRepo.setAvaToFalse(idForSet2);
+        RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl("/items/{idForSet2}");
+        return rv;
+    }
 
     @GetMapping("/setAvaToTrue/{idForSet}")
     public View setAvaToTrue(@PathVariable("idForSet") int idForSet) {
+        itemRepo.setAvaToTrue(idForSet);
+        RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl("/items/{idForSet}");
+        return rv;
+    }
+        @GetMapping("/Zh/setAvaToTrue/{idForSet}")
+    public View setAvaToTrueZh(@PathVariable("idForSet") int idForSet) {
         itemRepo.setAvaToTrue(idForSet);
         RedirectView rv = new RedirectView();
         rv.setContextRelative(true);
@@ -150,6 +170,13 @@ public class ItemController {
         model.addAttribute("comments", commentRepo.getComments(id));
         return "itemPage";
     }
+    @GetMapping("Zh/{id}")
+    public String itemZh(@PathVariable("id") int id, ModelMap model) {
+        model.addAttribute("Items", itemRepo.getItem(id));
+        model.addAttribute("pictures", pictureRepo.getAttachments(id));
+        model.addAttribute("comments", commentRepo.getComments(id));
+        return "itemPageZh";
+    }
 
     @GetMapping("/{id}/edit")
     public ModelAndView editItem(ModelMap model, @PathVariable("id") long id) throws IOException {
@@ -159,9 +186,22 @@ public class ItemController {
         models.put("itemForm", new FoodForm());
         return new ModelAndView("editItemForm", models);
     }
+    @GetMapping("/{id}/editZh")
+    public ModelAndView editItemZh(ModelMap model, @PathVariable("id") long id) throws IOException {
+        Map<String, Object> models = new HashMap<>();
+        List<FoodItem> item = itemRepo.getItem(id);
+        models.put("item", item.get(0));
+        models.put("itemForm", new FoodForm());
+        return new ModelAndView("editItemFormZh", models);
+    }
 
     @PostMapping("/{id}/edit")
     public View updateItem(FoodForm form, @PathVariable("id") Long id) throws IOException {
+        itemRepo.updateItem(id, form.getName(), form.getPrice(), form.getDescription(), true);
+        return new RedirectView("/items/" + id.toString());
+    }
+    @PostMapping("/{id}/editZh")
+    public View updateItemZh(FoodForm form, @PathVariable("id") Long id) throws IOException {
         itemRepo.updateItem(id, form.getName(), form.getPrice(), form.getDescription(), true);
         return new RedirectView("/items/" + id.toString());
     }
@@ -180,6 +220,11 @@ public class ItemController {
     @GetMapping("/{itemId}/comment")
     public ModelAndView commentForm(@PathVariable("itemId") long itemId) {
         return new ModelAndView("commentForm", "commentForm", new CommentForm());
+    }
+    
+    @GetMapping("/{itemId}/commentZh")
+    public ModelAndView commentFormZh(@PathVariable("itemId") long itemId) {
+        return new ModelAndView("commentFormZh", "commentForm", new CommentForm());
     }
 
     private static class CommentForm implements Serializable {
