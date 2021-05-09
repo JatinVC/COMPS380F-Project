@@ -2,6 +2,8 @@ package ouhk.comps380f.fproject.controller;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -14,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 import ouhk.comps380f.fproject.dao.UserRepository;
-import ouhk.comps380f.fproject.dao.UserRoleRepository;
 import ouhk.comps380f.fproject.model.SystemUser;
 import ouhk.comps380f.fproject.model.UserRole;
 
@@ -25,15 +26,15 @@ public class UserController {
     @Resource
     UserRepository UserRepo;
 
-    @GetMapping({"/list"})
+    @GetMapping("/list")
     public String list(ModelMap model, HttpServletRequest request) {
         if (!request.isUserInRole("ROLE_ADMIN")) {
             return "noAuthority";
         }
+
         model.addAttribute("systemUsers", UserRepo.findAll());
         return "listUser";
     }
-
     public static class Form {
 
         private String username;
@@ -103,8 +104,7 @@ public class UserController {
     }
 
     @PostMapping("/createUser")
-    public View create(Form form) throws IOException {
-
+    public View create(Form form,Principal principal) throws IOException {
         SystemUser user = new SystemUser(form.getUsername(),
                 form.getPassword(), form.getRoles(), form.getFullName(), form.getPhoneNumber(), form.getAddress()
         );
@@ -159,13 +159,13 @@ public class UserController {
             } else {
                 role2 = null;
             }
-            
+
             if (role1 != null && role2 == null || role1 == null && role2 != null) {
                 roles = new String[]{role1.getRole()};
             } else {
                 roles = new String[]{role1.getRole(), role2.getRole()};
             }
-            
+
             updateForm.setPassword(truePassword.replaceAll("\\{noop\\}", ""));
             updateForm.setFullName(user.getFullName());
             updateForm.setPhoneNumber(user.getPhoneNumber());
@@ -228,13 +228,6 @@ public class UserController {
         }
         UserRepo.delete(UserRepo.findById(username).orElse(null));
         return new RedirectView("/user/list", true);
-    }
-
-    @GetMapping("/{username}/orderHistory")
-    public String orderHistory(@PathVariable("username") String username, ModelMap model) {
-
-        model.addAttribute("currentUser", UserRepo.findAll());
-        return "orderHistory";
     }
 
     @GetMapping("/noAuthority")
