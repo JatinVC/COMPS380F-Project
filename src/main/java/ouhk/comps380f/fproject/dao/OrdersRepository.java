@@ -12,6 +12,6 @@ import ouhk.comps380f.fproject.model.Orders;
  *
  * @author Lkii
  */
-public interface OrdersRepository extends JpaRepository<Orders,Integer> {
+public interface OrdersRepository extends JpaRepository<Orders,String> {
    
 }
