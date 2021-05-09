@@ -6,12 +6,12 @@
 package ouhk.comps380f.fproject.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ouhk.comps380f.fproject.model.Cart;
+import ouhk.comps380f.fproject.model.Orders;
 
 /**
  *
  * @author Lkii
  */
-public interface CartRepository extends JpaRepository<Cart,Integer> {
+public interface OrdersRepository extends JpaRepository<Orders,Integer> {
    
 }
