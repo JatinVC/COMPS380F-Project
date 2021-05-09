@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -66,19 +67,47 @@ public class cartController {
         request.removeAttribute("cart", WebRequest.SCOPE_SESSION);
         return "viewCart";
     }
+    @RequestMapping("Zh/emptyCart")
+    public String emptyCartZh (WebRequest request, SessionStatus status) {
+        status.setComplete();
+        request.removeAttribute("cart", WebRequest.SCOPE_SESSION);
+        return "viewCartZh";
+    }
 
     @RequestMapping("/checkout")
-    public String checkout(WebRequest request, SessionStatus status,HttpServletRequest request1,Principal principal) {
+    public String checkout(WebRequest request, SessionStatus status,HttpServletRequest request1,Principal principal) throws InterruptedException {
         
         java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
         HttpSession session = request1.getSession();
         Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("cart");;
-        for (int i=0;i<cart.size();i++) {
+        try {
             Orders cartinfo = new Orders(principal.getName(),cart.toString(),date);
             orderRepo.save(cartinfo);
         }
+        catch(NullPointerException npe){
+            return "viewCart";
+        }
+        
         status.setComplete();
         request.removeAttribute("cart", WebRequest.SCOPE_SESSION);
         return "viewCart";
+    }
+    @RequestMapping("Zh/checkout")
+    public String checkoutZh(WebRequest request, SessionStatus status,HttpServletRequest request1,Principal principal) {
+        
+        java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        HttpSession session = request1.getSession();
+        Map<String, Integer> cart = (Map<String, Integer>) session.getAttribute("cart");;
+        try {
+            Orders cartinfo = new Orders(principal.getName(),cart.toString(),date);
+            orderRepo.save(cartinfo);
+        }
+        catch(NullPointerException npe){
+            return "viewCart";
+        }
+        
+        status.setComplete();
+        request.removeAttribute("cart", WebRequest.SCOPE_SESSION);
+        return "viewCartZh";
     }
 }
