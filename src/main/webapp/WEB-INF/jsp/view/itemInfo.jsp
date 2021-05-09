@@ -24,7 +24,10 @@
             <br/><br/>
             <security:authorize access="hasRole('ADMIN')"> 
                 [<a href="<c:url value="/user/list" />">User Management</a>]
-            </security:authorize>   
+            </security:authorize>
+            <security:authorize access="hasAnyRole('USER','ADMIN')"> 
+                [<a href="<c:url value="/items/create">">Create Food Item</a>]  
+            </security:authorize> 
             <h1>Item List</h1><br /><br />
             <c:forEach items="${Items}" var="items">
                 <security:authorize access="hasRole('ADMIN')"> 
