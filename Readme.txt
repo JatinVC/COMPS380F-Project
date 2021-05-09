@@ -20,7 +20,7 @@ The SQL file will insert 3 user:
 Additional Features:
    We have 4 people in the group, so we did 4 features:
    1.Ordering history page of a registered user
-   
+      
    2.Multiple languages
    
    3.Batch uploading of photos
