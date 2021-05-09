@@ -17,7 +17,7 @@ The SQL file will insert 3 user:
 3. Registered user only:
    UserName: kevin PassWord: kevinpw
    
-   Additional Features:
+Additional Features:
    We have 4 people in the group, so we did 4 features:
    1.Ordering history page of a registered user
    2.Batch uploading of photos
